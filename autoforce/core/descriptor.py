@@ -2,7 +2,7 @@
 import itertools
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Dict, List
 
 import torch
 

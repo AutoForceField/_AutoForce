@@ -1,6 +1,5 @@
 # +
 import torch
-from torch import Tensor
 
 import autoforce.cfg as cfg
 from autoforce.core import ChemPar, ReducedPar
@@ -13,7 +12,7 @@ def test_ChemPar() -> bool:
 
     #
     s = ChemPar(values={1: 1.0})
-    assert s[(1,)] == s[1] == 1.0 and s[2] == None
+    assert s[(1,)] == s[1] == 1.0 and s[2] is None
     s[:] = 3.0
     assert s[1] == s[2] == 3.0
 
@@ -25,13 +24,13 @@ def test_ChemPar() -> bool:
 
     #
     s = ChemPar(values={(1, 2): 1.0})
-    assert s[1, 2] == s[2, 1] == s[(1, 2)] == s[(2, 1)] == 1.0 and s[1, 3] == None
+    assert s[1, 2] == s[2, 1] == s[(1, 2)] == s[(2, 1)] == 1.0 and s[1, 3] is None
     s[:] = 2.0
     assert s[117, 75] == 2.0
 
     #
     s = ChemPar(values={(1, 2): 1.0}, permsym=False)
-    assert s[1, 2] == 1.0 and s[2, 1] == None
+    assert s[1, 2] == 1.0 and s[2, 1] is None
 
     #
     s = ChemPar(values={(1, 2): 1.0}, default=3.0, permsym=False)

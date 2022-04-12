@@ -2,7 +2,6 @@
 from typing import Any, Sequence
 
 import torch
-from torch import Tensor
 
 from .dataclass import Conf, Target
 from .parameter import ReducedPar
