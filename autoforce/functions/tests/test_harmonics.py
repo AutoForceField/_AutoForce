@@ -14,13 +14,13 @@ def _scipy_harmonics(rij: torch.Tensor, lmax: int) -> torch.Tensor:
     """
 
     r, theta, phi = r_theta_phi(rij)
-    rlm = torch.empty((lmax+1, lmax+1, rij.shape[0]))
-    for l in range(0, lmax+1):
-        for m in range(0, l+1):
-            val = r**l*sph_harm(m, l, phi, theta)
-            rlm[l, l-m] = val.real
+    rlm = torch.empty((lmax + 1, lmax + 1, rij.shape[0]))
+    for l in range(0, lmax + 1):
+        for m in range(0, l + 1):
+            val = r**l * sph_harm(m, l, phi, theta)
+            rlm[l, l - m] = val.real
             if m > 0:
-                rlm[l-m, l] = val.imag
+                rlm[l - m, l] = val.imag
 
     return rlm
 
@@ -35,22 +35,22 @@ def test_Harmonics_scipy(lmax: int = 10) -> float:
 
     rlm = Harmonics(lmax)
 
-    x = torch.tensor([[1., 0., 0.]], dtype=cfg.float_t)
-    y = torch.tensor([[0., 1., 0.]], dtype=cfg.float_t)
-    z = torch.tensor([[0., 0., 1.]], dtype=cfg.float_t)
+    x = torch.tensor([[1.0, 0.0, 0.0]], dtype=cfg.float_t)
+    y = torch.tensor([[0.0, 1.0, 0.0]], dtype=cfg.float_t)
+    z = torch.tensor([[0.0, 0.0, 1.0]], dtype=cfg.float_t)
 
     error = []
     for r in [x, y, z]:
         a = _scipy_harmonics(r, lmax)
         b = rlm.function(r)
-        error.append((a-b).abs().max())
+        error.append((a - b).abs().max())
 
     return float(max(error))
 
 
-def test_Harmonics_rotational_invariance(lmax: int = 10,
-                                         size: int = 1000
-                                         ) -> (float, float):
+def test_Harmonics_rotational_invariance(
+    lmax: int = 10, size: int = 1000
+) -> (float, float):
     """
     Test if "Harmonics" satisfies a known rotational
     invariance equation for spherical harmonics.
@@ -79,21 +79,21 @@ def test_Harmonics_rotational_invariance(lmax: int = 10,
     y = rlm.function(xyz)
 
     # invariant parameter
-    a = 2*torch.ones(lmax+1, lmax+1, dtype=cfg.float_t)
-    a -= torch.eye(lmax+1, dtype=cfg.float_t)
+    a = 2 * torch.ones(lmax + 1, lmax + 1, dtype=cfg.float_t)
+    a -= torch.eye(lmax + 1, dtype=cfg.float_t)
     a.unsqueeze_(-1)
-    a /= 2*rlm.l+1
-    a *= 4*cfg.pi/(lmax+1)
-    _1 = (a*y.pow(2)).sum(dim=(0, 1))
+    a /= 2 * rlm.l + 1
+    a *= 4 * cfg.pi / (lmax + 1)
+    _1 = (a * y.pow(2)).sum(dim=(0, 1))
 
     # errors
-    error = _1.sub(1.).abs().max().detach()
+    error = _1.sub(1.0).abs().max().detach()
     _1.sum().backward()
     grad_error = xyz.grad.norm(dim=1).sub(3).abs().max()
 
     return float(error), float(grad_error)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_Harmonics_scipy()
     test_Harmonics_rotational_invariance()

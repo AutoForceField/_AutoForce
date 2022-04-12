@@ -13,9 +13,9 @@ def r_theta_phi(v: Tensor) -> (Tensor, Tensor, Tensor):
     """
 
     x, y, z = v.T
-    rxy2 = x*x + y*y
+    rxy2 = x * x + y * y
     rxy = rxy2.sqrt()
-    r = (rxy2 + z*z).sqrt()
+    r = (rxy2 + z * z).sqrt()
     theta = torch.atan2(rxy, z)
     phi = torch.atan2(y, x)
 
@@ -28,16 +28,16 @@ def cartesian(r: Tensor, theta: Tensor, phi: Tensor) -> Tensor:
 
     """
 
-    x = r*theta.sin()*phi.cos()
-    y = r*theta.sin()*phi.sin()
-    z = r*theta.cos()
+    x = r * theta.sin() * phi.cos()
+    y = r * theta.sin() * phi.sin()
+    z = r * theta.cos()
 
     return torch.stack([x, y, z]).T
 
 
-def rotation_matrix(axis: Union[Tensor, Sequence[float]],
-                    theta: Union[Tensor, float]
-                    ) -> Tensor:
+def rotation_matrix(
+    axis: Union[Tensor, Sequence[float]], theta: Union[Tensor, float]
+) -> Tensor:
     """
     axis: rotation axis (length 3)
 
@@ -48,14 +48,18 @@ def rotation_matrix(axis: Union[Tensor, Sequence[float]],
     """
 
     axis = torch.as_tensor(axis)
-    axis = axis/axis.norm()
-    a = torch.as_tensor(theta/2).cos()
-    b, c, d = -axis*torch.as_tensor(theta/2).sin()
-    aa, bb, cc, dd = a*a, b*b, c*c, d*d
-    bc, ad, ac, ab, bd, cd = b*c, a*d, a*c, a*b, b*d, c*d
-    rot = torch.tensor([[aa+bb-cc-dd, 2*(bc+ad), 2*(bd-ac)],
-                        [2*(bc-ad), aa+cc-bb-dd, 2*(cd+ab)],
-                        [2*(bd+ac), 2*(cd-ab), aa+dd-bb-cc]])
+    axis = axis / axis.norm()
+    a = torch.as_tensor(theta / 2).cos()
+    b, c, d = -axis * torch.as_tensor(theta / 2).sin()
+    aa, bb, cc, dd = a * a, b * b, c * c, d * d
+    bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+    rot = torch.tensor(
+        [
+            [aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
+            [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
+            [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc],
+        ]
+    )
 
     return rot
 
@@ -69,17 +73,18 @@ def rotate(xyz: Tensor, R: Tensor) -> Tensor:
     returns rotated coordinates.
 
     """
-    return xyz@R.T
+    return xyz @ R.T
 
 
-def spherical_vector_to_cartesian(sin_theta: Tensor,
-                                  cos_theta: Tensor,
-                                  sin_phi: Tensor,
-                                  cos_phi: Tensor,
-                                  v_r: Tensor,
-                                  v_theta: Tensor,
-                                  v_phi: Tensor
-                                  ) -> (Tensor, Tensor, Tensor):
+def spherical_vector_to_cartesian(
+    sin_theta: Tensor,
+    cos_theta: Tensor,
+    sin_phi: Tensor,
+    cos_phi: Tensor,
+    v_r: Tensor,
+    v_theta: Tensor,
+    v_phi: Tensor,
+) -> (Tensor, Tensor, Tensor):
     """
     Transforms a vector from spherical coordinates:
         (v_r, v_theta, v_phi)
@@ -90,8 +95,8 @@ def spherical_vector_to_cartesian(sin_theta: Tensor,
 
     """
 
-    v_x = sin_theta*cos_phi*v_r + cos_theta*cos_phi*v_theta - sin_phi*v_phi
-    v_y = sin_theta*sin_phi*v_r + cos_theta*sin_phi*v_theta + cos_phi*v_phi
-    v_z = cos_theta*v_r - sin_theta*v_theta
+    v_x = sin_theta * cos_phi * v_r + cos_theta * cos_phi * v_theta - sin_phi * v_phi
+    v_y = sin_theta * sin_phi * v_r + cos_theta * sin_phi * v_theta + cos_phi * v_phi
+    v_z = cos_theta * v_r - sin_theta * v_theta
 
     return v_x, v_y, v_z

@@ -38,17 +38,15 @@ class LocalDes:
 
     """
 
-    __slots__ = ('descriptor',
-                 'species',
-                 'norm',
-                 '_cached_scalar_products')
+    __slots__ = ("descriptor", "species", "norm", "_cached_scalar_products")
 
-    def __init__(self,
-                 descriptor: TensorDict,
-                 index: Optional[int] = None,
-                 species: Optional[int] = None,
-                 norm: Optional[Tensor] = None
-                 ) -> None:
+    def __init__(
+        self,
+        descriptor: TensorDict,
+        index: Optional[int] = None,
+        species: Optional[int] = None,
+        norm: Optional[Tensor] = None,
+    ) -> None:
         """
         descriptor   a dict of {key: tensor} (main data)
         species      species of the descriptor
@@ -63,11 +61,10 @@ class LocalDes:
         # cache
         self._cached_scalar_products = []
 
-    def detach(self) -> 'LocalDes':
+    def detach(self) -> "LocalDes":
         descriptor = {k: t.detach() for k, t in self.descriptor.items()}
-        detached = LocalDes(descriptor,
-                            species=self.species,
-                            norm=self.norm.detach())
-        detached._cached_scalar_products = [[t.detach() for t in wrt]
-                                            for wrt in self._cached_scalar_products]
+        detached = LocalDes(descriptor, species=self.species, norm=self.norm.detach())
+        detached._cached_scalar_products = [
+            [t.detach() for t in wrt] for wrt in self._cached_scalar_products
+        ]
         return detached

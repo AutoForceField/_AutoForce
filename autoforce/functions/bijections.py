@@ -5,13 +5,10 @@ import torch
 
 
 class FiniteRange(Bijection):
-
     def __init__(self, a: float, b: float) -> None:
 
         if a > b:
-            raise RuntimeError('Lower bound is larger '
-                               'than upper bound!'
-                               )
+            raise RuntimeError("Lower bound is larger " "than upper bound!")
 
         self.a = torch.as_tensor(a)
         self.b = torch.as_tensor(b)
@@ -19,13 +16,13 @@ class FiniteRange(Bijection):
 
     def function(self, x: Tensor) -> Tensor:
         x = torch.as_tensor(x)
-        y = self.a + self.l*torch.special.expit(x)
+        y = self.a + self.l * torch.special.expit(x)
         return y
 
     def inverse(self, y: Tensor) -> Tensor:
         y = torch.as_tensor(y)
-        x = (y-self.a)/self.l
+        x = (y - self.a) / self.l
         return torch.special.logit(x)
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.a}, {self.b})'
+        return f"{self.__class__.__name__}({self.a}, {self.b})"

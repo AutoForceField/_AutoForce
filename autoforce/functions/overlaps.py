@@ -66,19 +66,21 @@ class Overlaps(Function):
 
         # Auxiliary Tensors
         self._nnl = _nnl(lmax, nmax)
-        self._pow_2n = 2*torch.arange(nmax+1).to(torch.int)
+        self._pow_2n = 2 * torch.arange(nmax + 1).to(torch.int)
         self._l = self.harmonics.l.reshape(-1).to(torch.int)
-        self._c_m = torch.eye(lmax+1).neg().add(2).to(torch.int)
+        self._c_m = torch.eye(lmax + 1).neg().add(2).to(torch.int)
 
     @property
     def lmax(self):
         return self.harmonics.lmax
 
-    def function(self, rij: torch.Tensor,
-                 species: torch.Tensor,
-                 wj: Optional[torch.Tensor] = None,
-                 compress: Optional[bool] = True
-                 ) -> (torch.Tensor, torch.Tensor, torch.Tensor):
+    def function(
+        self,
+        rij: torch.Tensor,
+        species: torch.Tensor,
+        wj: Optional[torch.Tensor] = None,
+        compress: Optional[bool] = True,
+    ) -> (torch.Tensor, torch.Tensor, torch.Tensor):
         """
         * rij: A float tensor with shape [:, 3] (displacement vectors).
 
@@ -125,14 +127,14 @@ class Overlaps(Function):
 
         # 2. Mappings
         d_j = rij.norm(dim=1)
-        q_j = (-0.5*d_j**2).exp()
+        q_j = (-0.5 * d_j**2).exp()
         if wj is not None:
-            q_j = q_j*wj
+            q_j = q_j * wj
         y_lmj = self.harmonics.function(rij)
 
         # 3. Radial & Angular Coupling
-        r_nj = (q_j*d_j[None]**self._pow_2n[:, None])
-        f_nlmj = r_nj[:, None, None]*y_lmj[None]
+        r_nj = q_j * d_j[None] ** self._pow_2n[:, None]
+        f_nlmj = r_nj[:, None, None] * y_lmj[None]
 
         # 4. Density per species
         c_snlm = torch.zeros_like(f_nlmj[..., 0]).repeat(ns, 1, 1, 1)
@@ -141,16 +143,24 @@ class Overlaps(Function):
             c_snlm[k] = f_nlmj.index_select(-1, i_j[species == z]).sum(dim=-1)
 
         # 5. Sum over m (c_snlm & c^*_snlm product)
-        _ssnnlm = c_snlm[None, :, None, ]*c_snlm[:, None, :, None]
+        _ssnnlm = (
+            c_snlm[
+                None,
+                :,
+                None,
+            ]
+            * c_snlm[:, None, :, None]
+        )
         tmp = _ssnnlm.mul(self._c_m).flatten(-2, -1)
-        _ssnnl = torch.zeros_like(_ssnnlm[..., 0]
-                                  ).index_add(-1, self._l, tmp)*self._nnl
+        _ssnnl = (
+            torch.zeros_like(_ssnnlm[..., 0]).index_add(-1, self._l, tmp) * self._nnl
+        )
 
         # 6. Compress
         if compress:
-            ui, uj = torch.triu_indices(self.nmax+1, self.nmax+1)
-            _2sq = (2.0-torch.eye(self.nmax+1, dtype=rij.dtype)).sqrt()
-            _ssnnl = _ssnnl[:, :, ui, uj, :]*_2sq[ui, uj, None]
+            ui, uj = torch.triu_indices(self.nmax + 1, self.nmax + 1)
+            _2sq = (2.0 - torch.eye(self.nmax + 1, dtype=rij.dtype)).sqrt()
+            _ssnnl = _ssnnl[:, :, ui, uj, :] * _2sq[ui, uj, None]
             _ssnnl = _ssnnl.flatten(-2, -1)
 
         # 7. Bcast Species
@@ -160,8 +170,13 @@ class Overlaps(Function):
 
 
 def _nnl(lmax, nmax):
-    a = torch.tensor([[1/(sqrt(2*l+1)*2**(2*n+l)*fac(n)*fac(n+l))
-                       for l in range(lmax+1)]
-                      for n in range(nmax+1)
-                      ])
-    return (a[None]*a[:, None]).sqrt().to(cfg.float_t)
+    a = torch.tensor(
+        [
+            [
+                1 / (sqrt(2 * l + 1) * 2 ** (2 * n + l) * fac(n) * fac(n + l))
+                for l in range(lmax + 1)
+            ]
+            for n in range(nmax + 1)
+        ]
+    )
+    return (a[None] * a[:, None]).sqrt().to(cfg.float_t)

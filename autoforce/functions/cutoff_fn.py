@@ -15,11 +15,11 @@ class PolynomialCut(Cutoff_fn):
     def __init__(self, degree: Optional[int] = 2) -> None:
         super().__init__()
         if degree < 2:
-            raise RuntimeError('PolynomialCut: degree is less than 2!')
+            raise RuntimeError("PolynomialCut: degree is less than 2!")
         self.degree = degree
 
     def smooth(self, sij: Tensor) -> Tensor:
-        return (1-sij)**self.degree
+        return (1 - sij) ** self.degree
 
 
 class CosineCut(Cutoff_fn):

@@ -16,19 +16,17 @@ def from_atoms(atoms: ase.Atoms) -> core.Conf:
 
     # 1.
     numbers = torch.from_numpy(atoms.numbers)
-    wrapped = wrap_positions(atoms.positions,
-                             atoms.cell,
-                             atoms.pbc)
+    wrapped = wrap_positions(atoms.positions, atoms.cell, atoms.pbc)
     positions = torch.from_numpy(wrapped).to(cfg.float_t)
     cell = torch.from_numpy(atoms.cell.array).to(cfg.float_t)
 
     # 2.
     e, f = None, None
     if atoms.calc:
-        if 'energy' in atoms.calc.results:
+        if "energy" in atoms.calc.results:
             e = atoms.get_potential_energy()
             e = torch.tensor(e).to(cfg.float_t)
-        if 'forces' in atoms.calc.results:
+        if "forces" in atoms.calc.results:
             f = atoms.get_forces()
             f = torch.from_numpy(f).to(cfg.float_t)
     target = core.Target(energy=e, forces=f)

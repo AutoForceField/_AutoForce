@@ -41,13 +41,13 @@ def configure_precision(dtype: torch.dtype) -> None:
     """
 
     glob = globals()
-    glob['float_t'] = dtype
-    glob['finfo'] = torch.finfo(dtype)
-    glob['eps'] = finfo.eps
-    glob['zero'] = torch.tensor(0.0, dtype=dtype)
-    glob['one'] = torch.tensor(1.0, dtype=dtype)
-    glob['empty'] = torch.empty(0, dtype=dtype)
-    glob['pi'] = torch.tensor(_pi, dtype=dtype)
+    glob["float_t"] = dtype
+    glob["finfo"] = torch.finfo(dtype)
+    glob["eps"] = finfo.eps
+    glob["zero"] = torch.tensor(0.0, dtype=dtype)
+    glob["one"] = torch.tensor(1.0, dtype=dtype)
+    glob["empty"] = torch.empty(0, dtype=dtype)
+    glob["pi"] = torch.tensor(_pi, dtype=dtype)
 
 
 configure_precision(torch.float64)

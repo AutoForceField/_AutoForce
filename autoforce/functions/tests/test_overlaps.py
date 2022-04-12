@@ -13,7 +13,7 @@ def test_Overlaps_perm() -> bool:
     """
 
     # 1. Setup
-    cutoff = 6.
+    cutoff = 6.0
     lmax = 4
     nmax = 4
     nj = 40
@@ -22,8 +22,8 @@ def test_Overlaps_perm() -> bool:
     soap = Overlaps(lmax, nmax)
     cut = CosineCut()
     rij = torch.rand(nj, 3, dtype=cfg.float_t)
-    rij.sub_(0.5).mul_(2*cutoff+1.)
-    species = torch.tensor(type1*[1]+type2*[2])
+    rij.sub_(0.5).mul_(2 * cutoff + 1.0)
+    species = torch.tensor(type1 * [1] + type2 * [2])
 
     # 2. Test
     dij = rij.norm(dim=1)
@@ -42,7 +42,7 @@ def test_Overlaps_backward():
     """
 
     # 1. Setup
-    cutoff = 6.
+    cutoff = 6.0
     lmax = 4
     nmax = 4
     nj = 40
@@ -51,8 +51,8 @@ def test_Overlaps_backward():
     soap = Overlaps(lmax, nmax)
     cut = CosineCut()
     rij = torch.rand(nj, 3, dtype=cfg.float_t)
-    rij.sub_(0.5).mul_(2*cutoff+1.)
-    species = torch.tensor(type1*[1]+type2*[2])
+    rij.sub_(0.5).mul_(2 * cutoff + 1.0)
+    species = torch.tensor(type1 * [1] + type2 * [2])
 
     # 2. Test
     rij.requires_grad = True
@@ -71,7 +71,7 @@ def test_Overlaps_rotational_invariance():
     """
 
     # 1. Setup
-    cutoff = 6.
+    cutoff = 6.0
     lmax = 6
     nmax = 6
     nj = 40
@@ -79,14 +79,14 @@ def test_Overlaps_rotational_invariance():
     type2 = nj - type1
     soap = Overlaps(lmax, nmax)
     cut = CosineCut()
-    species = torch.tensor(type1*[1]+type2*[2])
-    r = torch.rand(nj, dtype=cfg.float_t)*cutoff + 0.5
-    theta = torch.rand(nj, dtype=cfg.float_t)*pi
-    phi = torch.rand(nj, dtype=cfg.float_t)*2*pi
+    species = torch.tensor(type1 * [1] + type2 * [2])
+    r = torch.rand(nj, dtype=cfg.float_t) * cutoff + 0.5
+    theta = torch.rand(nj, dtype=cfg.float_t) * pi
+    phi = torch.rand(nj, dtype=cfg.float_t) * 2 * pi
     rij = cartesian(r, theta, phi)
     wj = cut.function(r, cutoff)
-    R_z = rotation_matrix([0., 0., 1.], pi/18)
-    R_y = rotation_matrix([0., 1., 0.], pi/18)
+    R_z = rotation_matrix([0.0, 0.0, 1.0], pi / 18)
+    R_y = rotation_matrix([0.0, 1.0, 0.0], pi / 18)
 
     # 2. Test
     y0 = None
@@ -100,7 +100,7 @@ def test_Overlaps_rotational_invariance():
                 y0 = y
                 norm = y0.norm()
             else:
-                errors.append((y-y0).norm()/norm)
+                errors.append((y - y0).norm() / norm)
 
     return max(errors)
 
@@ -114,7 +114,7 @@ def test_Overlaps_compressed_norm():
     """
 
     # 1. Setup
-    cutoff = 6.
+    cutoff = 6.0
     lmax = 3
     nmax = 4
     nj = 40
@@ -123,8 +123,8 @@ def test_Overlaps_compressed_norm():
     soap = Overlaps(lmax, nmax)
     cut = CosineCut()
     rij = torch.rand(nj, 3, dtype=cfg.float_t)
-    rij.sub_(0.5).mul_(2*cutoff+1.)
-    species = torch.tensor(type1*[1]+type2*[2])
+    rij.sub_(0.5).mul_(2 * cutoff + 1.0)
+    species = torch.tensor(type1 * [1] + type2 * [2])
 
     # 2. Test
     rij.requires_grad = True
@@ -136,7 +136,7 @@ def test_Overlaps_compressed_norm():
     return y1.norm().isclose(y2.norm())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     assert test_Overlaps_perm()
     assert test_Overlaps_backward()
     assert test_Overlaps_rotational_invariance() < 5e-5

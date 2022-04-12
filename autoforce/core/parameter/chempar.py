@@ -14,7 +14,7 @@ class ChemPar:
     cutoff can depend on the pair type:
     >>> R[a, b] = x
     Arbitrary number of indices (keylen) are
-    possible: R[a, b, c, ...] = x. 
+    possible: R[a, b, c, ...] = x.
     Since specification of all key-value pairs
     can become cumbersome and in some cases all
     possible keys are not clear beforehand, one
@@ -59,19 +59,27 @@ class ChemPar:
 
     """
 
-    __slots__ = ('values', 'default', 'clone', 'keylen',
-                 'permsym', 'bijection', '_requires_grad')
+    __slots__ = (
+        "values",
+        "default",
+        "clone",
+        "keylen",
+        "permsym",
+        "bijection",
+        "_requires_grad",
+    )
 
-    def __init__(self,
-                 *,
-                 values: Optional[Dict[Tuple[int, ...], Tensor]] = None,
-                 default: Optional[Tensor] = None,
-                 clone: Optional[bool] = True,
-                 keylen: Optional[int] = None,
-                 permsym: Optional[bool] = True,
-                 bijection: Optional[Bijection] = None,
-                 requires_grad: Optional[bool] = False
-                 ) -> None:
+    def __init__(
+        self,
+        *,
+        values: Optional[Dict[Tuple[int, ...], Tensor]] = None,
+        default: Optional[Tensor] = None,
+        clone: Optional[bool] = True,
+        keylen: Optional[int] = None,
+        permsym: Optional[bool] = True,
+        bijection: Optional[Bijection] = None,
+        requires_grad: Optional[bool] = False,
+    ) -> None:
         """
         values         a key-value dictionary
         default        the value for future keys which
@@ -97,11 +105,11 @@ class ChemPar:
 
         if values is None or values is {}:
             if self.keylen is None:
-                raise RuntimeError('Specify keylen explicitly!')
+                raise RuntimeError("Specify keylen explicitly!")
         else:
             for key, val in values.items():
                 if self.keylen is None:
-                    if hasattr(key, '__iter__'):
+                    if hasattr(key, "__iter__"):
                         self.keylen = len(key)
                     else:
                         self.keylen = 1
@@ -127,12 +135,13 @@ class ChemPar:
 
     def _getkey(self, key: Tuple[int, ...]) -> Tuple[int, ...]:
 
-        if not hasattr(key, '__iter__'):
+        if not hasattr(key, "__iter__"):
             key = (key,)
 
         if len(key) != self.keylen:
-            raise IndexError(f'The key {key} has the wrong'
-                             ' length! (!={self.keylen})')
+            raise IndexError(
+                f"The key {key} has the wrong" " length! (!={self.keylen})"
+            )
 
         if self.permsym:
             key = tuple(sorted(key))
@@ -154,7 +163,7 @@ class ChemPar:
                 self.values = {}
                 self.default = value
             else:
-                raise RuntimeError('Only [:] slice can be specified!')
+                raise RuntimeError("Only [:] slice can be specified!")
         else:
             self.values[self._getkey(key)] = value
 
@@ -178,12 +187,11 @@ class ChemPar:
 
         return value
 
-    def as_dict(self,
-                species: Tuple[int],
-                convert: Optional[Callable] = None
-                ) -> Dict[Tuple[int], Tensor]:
+    def as_dict(
+        self, species: Tuple[int], convert: Optional[Callable] = None
+    ) -> Dict[Tuple[int], Tensor]:
 
-        if not hasattr(species, '__iter__'):
+        if not hasattr(species, "__iter__"):
             species = (species,)
 
         species = set(species)
@@ -216,21 +224,14 @@ class ChemPar:
 
 
 class ReducedPar:
-
-    def __init__(self,
-                 *par: Any,
-                 op: Optional[Callable] = max
-                 ) -> None:
+    def __init__(self, *par: Any, op: Optional[Callable] = max) -> None:
         self.par = par
         self.op = op
 
     def include(self, *par: Any) -> None:
         self.par = (*self.par, *par)
 
-    def as_dict(self,
-                species: Tuple[int],
-                convert: Optional[Callable] = None
-                ) -> Dict:
+    def as_dict(self, species: Tuple[int], convert: Optional[Callable] = None) -> Dict:
         dct = {}
         for par in self.par:
             _dct = par.as_dict(species, convert).items()

@@ -1,0 +1,3 @@
+### Developer
+
+* install pre-commit

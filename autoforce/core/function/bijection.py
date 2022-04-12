@@ -13,6 +13,7 @@ class Bijection(Function):
         x = inverse(function(x))
 
     """
+
     @abstractmethod
     def function(self, x: Tensor) -> Tensor:
         ...

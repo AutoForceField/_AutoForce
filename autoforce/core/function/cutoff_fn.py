@@ -20,10 +20,7 @@ class Cutoff_fn(Function):
         """
 
         beyond = dij > cutoff
-        result = torch.where(beyond,
-                             cfg.zero,
-                             self.smooth(dij/cutoff)
-                             )
+        result = torch.where(beyond, cfg.zero, self.smooth(dij / cutoff))
         return result
 
     @abstractmethod

@@ -60,7 +60,7 @@ class Model:
         opt_mae = None
         for _ in range(7):
             sol = torch.linalg.lstsq(matrix, targets).solution
-            mae = (matrix@sol - targets).abs().mean()
+            mae = (matrix @ sol - targets).abs().mean()
             if opt_mae is None or mae < opt_mae:
                 opt_mae = mae
                 solution = sol

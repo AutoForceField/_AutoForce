@@ -22,32 +22,35 @@ class Conf:
 
     """
 
-    __slots__ = ('numbers',
-                 'positions',
-                 'cell',
-                 'pbc',
-                 'target',
-                 'number_of_atoms',
-                 'unique_counts',
-                 '_cached_local_envs',
-                 '_cached_isolated_atoms')
+    __slots__ = (
+        "numbers",
+        "positions",
+        "cell",
+        "pbc",
+        "target",
+        "number_of_atoms",
+        "unique_counts",
+        "_cached_local_envs",
+        "_cached_isolated_atoms",
+    )
 
-    def __init__(self,
-                 numbers: Tensor,
-                 positions: Tensor,
-                 cell: Tensor,
-                 pbc: List[bool],
-                 target: Optional[Target] = None
-                 ) -> None:
+    def __init__(
+        self,
+        numbers: Tensor,
+        positions: Tensor,
+        cell: Tensor,
+        pbc: List[bool],
+        target: Optional[Target] = None,
+    ) -> None:
         """
         Self explanatory.
 
         """
 
         if positions.requires_grad != cell.requires_grad:
-            raise RuntimeError('requires_grad should be the '
-                               'same for positions and cell!'
-                               )
+            raise RuntimeError(
+                "requires_grad should be the " "same for positions and cell!"
+            )
 
         self.numbers = numbers
         self.number_of_atoms = int(numbers.numel())

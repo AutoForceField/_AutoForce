@@ -15,21 +15,24 @@ class LocalEnv:
 
     """
 
-    __slots__ = ('index',
-                 'number',
-                 'neighbors',
-                 'numbers',
-                 'rij',
-                 '_cached_descriptors')
+    __slots__ = (
+        "index",
+        "number",
+        "neighbors",
+        "numbers",
+        "rij",
+        "_cached_descriptors",
+    )
 
-    def __init__(self,
-                 index: Tensor,
-                 number: Tensor,
-                 neighbors: Tensor,
-                 numbers: Tensor,
-                 rij: Tensor,
-                 dij: Optional[Tensor] = None
-                 ) -> None:
+    def __init__(
+        self,
+        index: Tensor,
+        number: Tensor,
+        neighbors: Tensor,
+        numbers: Tensor,
+        rij: Tensor,
+        dij: Optional[Tensor] = None,
+    ) -> None:
         """
         index    index of the central atom in the
                  Conf it belongs to.
