@@ -1,7 +1,9 @@
 # +
-from .function import Function
-from torch import Tensor
 from abc import abstractmethod
+
+from torch import Tensor
+
+from .function import Function
 
 
 class Bijection(Function):
@@ -13,6 +15,7 @@ class Bijection(Function):
         x = inverse(function(x))
 
     """
+
     @abstractmethod
     def function(self, x: Tensor) -> Tensor:
         ...
