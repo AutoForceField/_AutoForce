@@ -1,7 +1,7 @@
 # +
 import autoforce.core as core
-from autoforce.functions import Overlaps
 from autoforce._typing import Tensor, TensorDict
+from autoforce.functions import Overlaps
 
 
 class SOAP(core.Descriptor):

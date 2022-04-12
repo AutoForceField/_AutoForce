@@ -1,6 +1,7 @@
 # +
-from torch import Tensor
 from typing import Optional
+
+from torch import Tensor
 
 
 class LocalEnv:

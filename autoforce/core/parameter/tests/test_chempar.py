@@ -1,9 +1,10 @@
 # +
+import torch
+from torch import Tensor
+
 import autoforce.cfg as cfg
 from autoforce.core import ChemPar, ReducedPar
 from autoforce.functions import FiniteRange
-from torch import Tensor
-import torch
 
 
 def test_ChemPar() -> bool:

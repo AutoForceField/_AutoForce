@@ -1,14 +1,17 @@
 # +
-import autoforce.cfg as cfg
-from ..dataclass import Conf, Target
-from ..parameter import Cutoff, ChemPar
-from ..function import Kernel
-from ..descriptor import Descriptor
-from .regressor import Regressor
-from torch import Tensor
-import torch
 from abc import ABC, abstractmethod
-from typing import Sequence, Tuple, Union, Any, Dict
+from typing import Any, Dict, Sequence, Tuple, Union
+
+import torch
+from torch import Tensor
+
+import autoforce.cfg as cfg
+
+from ..dataclass import Conf, Target
+from ..descriptor import Descriptor
+from ..function import Kernel
+from ..parameter import ChemPar, Cutoff
+from .regressor import Regressor
 
 
 class KernelRegressor(Regressor):

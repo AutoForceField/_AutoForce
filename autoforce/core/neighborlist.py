@@ -1,12 +1,14 @@
 # +
-from .dataclass import Conf, LocalEnv
-from .parameter import Cutoff
-from numpy import ndarray
+from abc import ABC, abstractmethod
+from collections import Counter
+from typing import Dict, List, Optional
+
 import numpy as np
 import torch
-from collections import Counter
-from abc import ABC, abstractmethod
-from typing import List, Dict, Optional
+from numpy import ndarray
+
+from .dataclass import Conf, LocalEnv
+from .parameter import Cutoff
 
 
 class NeighborList(ABC):

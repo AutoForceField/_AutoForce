@@ -1,9 +1,10 @@
 # +
+import torch
+from scipy.special import sph_harm
+
 import autoforce.cfg as cfg
 from autoforce.functions import Harmonics
 from autoforce.functions.coordinates import r_theta_phi
-from scipy.special import sph_harm
-import torch
 
 
 def _scipy_harmonics(rij: torch.Tensor, lmax: int) -> torch.Tensor:

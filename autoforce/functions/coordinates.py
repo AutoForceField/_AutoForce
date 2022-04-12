@@ -1,7 +1,8 @@
 # +
+from typing import Sequence, Union
+
 import torch
 from torch import Tensor
-from typing import Union, Sequence
 
 
 def r_theta_phi(v: Tensor) -> (Tensor, Tensor, Tensor):

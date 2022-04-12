@@ -1,7 +1,9 @@
 # +
-from .function import Function
-from torch import Tensor
 from abc import abstractmethod
+
+from torch import Tensor
+
+from .function import Function
 
 
 class Bijection(Function):

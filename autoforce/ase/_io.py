@@ -1,11 +1,13 @@
 # +
+from typing import Any, List, Union
+
+import ase
+import torch
+from ase.io import read as _read
+from ase.neighborlist import wrap_positions
+
 import autoforce.cfg as cfg
 import autoforce.core as core
-from ase.neighborlist import wrap_positions
-from ase.io import read as _read
-from typing import List, Any, Union
-import torch
-import ase
 
 
 def from_atoms(atoms: ase.Atoms) -> core.Conf:

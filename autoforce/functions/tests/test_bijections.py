@@ -1,6 +1,7 @@
 # +
-from autoforce.functions import FiniteRange
 import torch
+
+from autoforce.functions import FiniteRange
 
 
 def test_FiniteRange() -> bool:

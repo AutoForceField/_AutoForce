@@ -1,8 +1,9 @@
 # +
-from .des import LocalDes
-from collections import defaultdict
 import itertools
+from collections import defaultdict
 from typing import Dict
+
+from .des import LocalDes
 
 
 class Basis:

@@ -1,8 +1,10 @@
 # +
+from typing import Optional
+
+from torch import Tensor
+
 import autoforce.cfg as cfg
 from autoforce.core import Cutoff_fn
-from torch import Tensor
-from typing import Optional
 
 
 class PolynomialCut(Cutoff_fn):

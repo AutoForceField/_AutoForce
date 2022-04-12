@@ -1,9 +1,11 @@
 # +
+from typing import Sequence, Tuple
+
+import torch
+from torch import Tensor
+
 import autoforce.cfg as cfg
 import autoforce.core as core
-from torch import Tensor
-import torch
-from typing import Sequence, Tuple
 
 
 class Shift(core.Regressor):

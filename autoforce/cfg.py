@@ -31,8 +31,9 @@ operations, a mixed precision scheme may be adopted
 in future.
 
 """
-import torch
 from math import pi as _pi
+
+import torch
 
 
 def configure_precision(dtype: torch.dtype) -> None:

@@ -1,9 +1,10 @@
 # +
+import torch
+
 import autoforce.cfg as cfg
 from autoforce.cfg import pi
-from autoforce.functions import Overlaps, CosineCut
+from autoforce.functions import CosineCut, Overlaps
 from autoforce.functions.coordinates import cartesian, rotate, rotation_matrix
-import torch
 
 
 def test_Overlaps_perm() -> bool:

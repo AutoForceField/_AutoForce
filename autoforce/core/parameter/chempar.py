@@ -1,10 +1,13 @@
 # +
-import autoforce.cfg as cfg
-from ..function import Bijection
-from torch import Tensor
-import torch
 from itertools import product
-from typing import Optional, Union, Dict, Tuple, Callable, Any
+from typing import Any, Callable, Dict, Optional, Tuple, Union
+
+import torch
+from torch import Tensor
+
+import autoforce.cfg as cfg
+
+from ..function import Bijection
 
 
 class ChemPar:

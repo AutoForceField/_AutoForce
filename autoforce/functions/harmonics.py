@@ -1,8 +1,10 @@
 # +
+from math import sqrt
+
+import torch
+
 import autoforce.cfg as cfg
 from autoforce.core import Function
-from math import sqrt
-import torch
 
 
 class Harmonics(Function):

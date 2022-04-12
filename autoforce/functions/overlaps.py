@@ -1,11 +1,15 @@
 # +
+from itertools import product
+from math import factorial as fac
+from math import sqrt
+from typing import Optional
+
+import torch
+
 import autoforce.cfg as cfg
 from autoforce.core import Function
+
 from .harmonics import Harmonics
-import torch
-from math import sqrt, factorial as fac
-from itertools import product
-from typing import Optional
 
 
 class Overlaps(Function):

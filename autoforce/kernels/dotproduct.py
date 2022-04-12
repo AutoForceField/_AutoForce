@@ -1,6 +1,7 @@
 # +
-import autoforce.core as core
 from torch import Tensor
+
+import autoforce.core as core
 
 
 class DotProductKernel(core.Kernel):

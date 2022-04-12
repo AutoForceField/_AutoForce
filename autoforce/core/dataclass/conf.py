@@ -1,7 +1,9 @@
 # +
-from .target import Target
-from torch import Tensor
 from typing import List, Optional
+
+from torch import Tensor
+
+from .target import Target
 
 
 class Conf:

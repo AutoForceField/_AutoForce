@@ -1,14 +1,17 @@
 # +
-import autoforce.cfg as cfg
-from .dataclass import Conf, LocalEnv, LocalDes, Basis
-from .parameter import Cutoff
-from .function import Cutoff_fn
-import torch
-from collections import defaultdict
 import itertools
 from abc import ABC, abstractmethod
+from collections import defaultdict
+from typing import Any, Dict, List, Optional
+
+import torch
+
+import autoforce.cfg as cfg
 from autoforce._typing import Tensor, TensorDict
-from typing import Dict, List, Any, Optional
+
+from .dataclass import Basis, Conf, LocalDes, LocalEnv
+from .function import Cutoff_fn
+from .parameter import Cutoff
 
 
 class Descriptor(ABC):

@@ -1,7 +1,8 @@
 # +
-from autoforce.core import Bijection
-from torch import Tensor
 import torch
+from torch import Tensor
+
+from autoforce.core import Bijection
 
 
 class FiniteRange(Bijection):

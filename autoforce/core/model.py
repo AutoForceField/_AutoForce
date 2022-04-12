@@ -1,9 +1,11 @@
 # +
-from .parameter import ReducedPar
-from .dataclass import Conf, Target
-from torch import Tensor
+from typing import Any, Sequence
+
 import torch
-from typing import Sequence, Any
+from torch import Tensor
+
+from .dataclass import Conf, Target
+from .parameter import ReducedPar
 
 
 class Model:

@@ -1,9 +1,11 @@
 # +
+from abc import ABC, abstractmethod
+from typing import Any, Sequence, Union
+
+from torch import Tensor
+
 from ..dataclass import Conf, Target
 from ..parameter import Cutoff
-from torch import Tensor
-from abc import ABC, abstractmethod
-from typing import Sequence, Union, Any
 
 
 class Regressor(ABC):

@@ -1,9 +1,12 @@
 # +
-import autoforce.cfg as cfg
-from .function import Function
-from torch import Tensor
-import torch
 from abc import abstractmethod
+
+import torch
+from torch import Tensor
+
+import autoforce.cfg as cfg
+
+from .function import Function
 
 
 class Cutoff_fn(Function):
