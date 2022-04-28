@@ -4,13 +4,11 @@ from collections import defaultdict
 from typing import Dict, List
 
 import torch
-from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce._typing import Descriptor_fn, TensorDict
 
-from .dataclass import Basis, Conf, LocalDes, LocalEnv
-from .function import Cutoff_fn
+from .dataclass import Basis, Conf, LocalDes, LocalEnv, Tensor, TensorDict
+from .function import Cutoff_fn, Descriptor_fn
 from .parameter import Cutoff
 
 

@@ -1,7 +1,7 @@
 # +
 from typing import Optional
 
-from autoforce._typing import Tensor, TensorDict
+from ._typing import Tensor, TensorDict
 
 
 class LocalDes:
