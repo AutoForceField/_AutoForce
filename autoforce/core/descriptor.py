@@ -1,20 +1,18 @@
 # +
 import itertools
-from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Dict, List
 
 import torch
 
 import autoforce.cfg as cfg
-from autoforce._typing import Tensor, TensorDict
 
-from .dataclass import Basis, Conf, LocalDes, LocalEnv
-from .function import Cutoff_fn
+from .dataclass import Basis, Conf, LocalDes, LocalEnv, Tensor, TensorDict
+from .function import Cutoff_fn, Descriptor_fn
 from .parameter import Cutoff
 
 
-class Descriptor(ABC):
+class Descriptor:
     """
     A Descriptor converts a "LocalEnv" object
     into a "LocalDes" object:
@@ -50,33 +48,27 @@ class Descriptor(ABC):
 
     instances = 0
 
-    def __init__(self, cutoff: Cutoff, cutoff_fn: Cutoff_fn) -> None:
+    def __init__(
+        self, cutoff: Cutoff, cutoff_fn: Cutoff_fn, descriptor_fn: Descriptor_fn
+    ) -> None:
 
         self.cutoff = cutoff
         self.cutoff_fn = cutoff_fn
+        self.descriptor_fn = descriptor_fn
 
         # Assign a global index for this instance
         self.index = Descriptor.instances
         Descriptor.instances += 1
         self.basis = tuple()
 
-    @abstractmethod
     def descriptor(
-        self, number: Tensor, numbers: Tensor, rij: Tensor, wij: Tensor
-    ) -> TensorDict:
-        """
-        Should be implemented in a subclass.
-
-        """
-        ...
-
-    def _descriptor(
         self, number: Tensor, numbers: Tensor, rij: Tensor, cij: Tensor
     ) -> TensorDict:
         dij = rij.norm(dim=1)
         m = dij < cij
         wij = self.cutoff_fn.function(dij[m], cij[m])
-        d = self.descriptor(number, numbers[m], rij[m], wij)
+        unique = set(numbers[m].tolist())
+        d = self.descriptor_fn.function(rij[m], wij, numbers[m], unique)
         return d
 
     def get_descriptor(self, e: LocalEnv) -> LocalDes:
@@ -84,7 +76,7 @@ class Descriptor(ABC):
             e._cached_descriptors.append(None)
         if e._cached_descriptors[self.index] is None:
             cij = self.cutoff(e.number, e.numbers)
-            _d = self._descriptor(e.number, e.numbers, e.rij, cij)
+            _d = self.descriptor(e.number, e.numbers, e.rij, cij)
             d = LocalDes(_d)
             d.norm = self.scalar_product(d, d).sqrt().view([])
             d.species = int(e.number)
