@@ -6,10 +6,10 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from ..dataclass import Conf, Target
-from ..descriptor import Descriptor
-from ..function import Kernel_fn
-from ..parameter import ChemPar, Cutoff
+from ..dataclasses import Conf, Target
+from ..functions import Kernel_fn
+from ..parameters import ChemPar, Cutoff
+from .descriptor import Descriptor
 from .regressor import Regressor
 
 

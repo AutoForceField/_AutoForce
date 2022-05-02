@@ -3,8 +3,8 @@ from typing import Any, Sequence
 
 import torch
 
-from .dataclass import Conf, Target
-from .parameter import ReducedPar
+from ..dataclasses import Conf, Target
+from ..parameters import ReducedPar
 
 
 class Model:

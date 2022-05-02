@@ -7,8 +7,8 @@ import numpy as np
 import torch
 from numpy import ndarray
 
-from .dataclass import Conf, LocalEnv
-from .parameter import Cutoff
+from .dataclasses import Conf, LocalEnv
+from .parameters import Cutoff
 
 
 class NeighborList(ABC):
