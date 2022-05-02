@@ -39,7 +39,7 @@ class LocalDes:
 
     """
 
-    __slots__ = ("descriptor", "species", "norm", "_cached_scalar_products")
+    __slots__ = ("descriptor", "species", "norm", "_cache_p")
 
     def __init__(
         self,
@@ -60,12 +60,10 @@ class LocalDes:
         self.norm = norm
 
         # cache
-        self._cached_scalar_products = []
+        self._cache_p = []
 
     def detach(self) -> "LocalDes":
         descriptor = {k: t.detach() for k, t in self.descriptor.items()}
         detached = LocalDes(descriptor, species=self.species, norm=self.norm.detach())
-        detached._cached_scalar_products = [
-            [t.detach() for t in wrt] for wrt in self._cached_scalar_products
-        ]
+        detached._cache_p = [[t.detach() for t in wrt] for wrt in self._cache_p]
         return detached

@@ -73,21 +73,21 @@ class Descriptor:
         return d
 
     def get_descriptor(self, e: LocalEnv) -> LocalDes:
-        while len(e._cached_descriptors) < Descriptor.instances:
-            e._cached_descriptors.append(None)
-        if e._cached_descriptors[self.index] is None:
+        while len(e._cache_d) < Descriptor.instances:
+            e._cache_d.append(None)
+        if e._cache_d[self.index] is None:
             cij = self.cutoff(e.number, e.numbers)
             _d = self.descriptor(e.number, e.numbers, e.rij, cij)
             d = LocalDes(_d)
             d.norm = self.scalar_product(d, d).sqrt().view([])
             d.species = int(e.number)
-            e._cached_descriptors[self.index] = d
-        return e._cached_descriptors[self.index]
+            e._cache_d[self.index] = d
+        return e._cache_d[self.index]
 
     def get_descriptors(self, conf: Conf) -> List[LocalDes]:
-        if conf._cached_local_envs is None:
-            raise RuntimeError(f"{conf._cached_local_envs = }")
-        return [self.get_descriptor(l) for l in conf._cached_local_envs]
+        if conf._cache_e is None:
+            raise RuntimeError(f"{conf._cache_e = }")
+        return [self.get_descriptor(l) for l in conf._cache_e]
 
     def scalar_product(self, x: LocalDes, y: LocalDes) -> Tensor:
         kx = set(x.descriptor.keys())
@@ -98,22 +98,20 @@ class Descriptor:
         return product
 
     def get_scalar_products(self, d: LocalDes, basis: Basis) -> List[Tensor]:
-        # 1. update cache: d._cached_scalar_products
-        while len(d._cached_scalar_products) <= basis.index:
-            d._cached_scalar_products.append([])
-        m = len(d._cached_scalar_products[basis.index])
+        # 1. update cache: d._cache_p
+        while len(d._cache_p) <= basis.index:
+            d._cache_p.append([])
+        m = len(d._cache_p[basis.index])
         new = [
             self.scalar_product(base, d) if active else None
             for base, active in zip(
                 basis.descriptors[d.species][m:], basis.active[d.species][m:]
             )
         ]
-        d._cached_scalar_products[basis.index].extend(new)
+        d._cache_p[basis.index].extend(new)
 
         # 2. retrieve from cache
-        out = itertools.compress(
-            d._cached_scalar_products[basis.index], basis.active[d.species]
-        )
+        out = itertools.compress(d._cache_p[basis.index], basis.active[d.species])
         return list(out)
 
     def get_scalar_products_dict(self, conf: Conf, basis: Basis) -> (Dict, Dict):

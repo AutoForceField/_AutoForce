@@ -30,9 +30,9 @@ class NeighborList(ABC):
         ...
 
     def get_local_envs(self, conf: Conf) -> List[LocalEnv]:
-        if conf._cached_local_envs is None:
+        if conf._cache_e is None:
             self.build_local_envs(conf)
-        return conf._cached_local_envs
+        return conf._cache_e
 
     def build_local_envs(self, conf: Conf) -> None:
         # 1. Get neighborlist:
@@ -57,7 +57,7 @@ class NeighborList(ABC):
         rij = rij.split(sizes)
 
         # 4. Cache
-        conf._cached_local_envs = []
+        conf._cache_e = []
         _cached_isolated_atoms = Counter()
         for k in range(conf.number_of_atoms):
             if sizes[k] == 0:
@@ -65,4 +65,4 @@ class NeighborList(ABC):
             else:
                 _i = i[k][0]
                 env = LocalEnv(_i, conf.numbers[_i], j[k], conf.numbers[j[k]], rij[k])
-                conf._cached_local_envs.append(env)
+                conf._cache_e.append(env)
