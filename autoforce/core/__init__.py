@@ -1,6 +1,7 @@
+# +
 from .dataclass import Basis, Conf, LocalDes, LocalEnv, Target
 from .descriptor import Descriptor
-from .function import Bijection, Cutoff_fn, Function, Kernel
+from .function import Bijection_fn, Cutoff_fn, Descriptor_fn, Kernel_fn, Map_fn
 from .model import Model
 from .neighborlist import NeighborList
 from .parameter import ChemPar, Cutoff, ReducedPar
@@ -12,11 +13,12 @@ __all__ = [
     LocalDes,
     LocalEnv,
     Target,
-    Descriptor,
-    Bijection,
+    Bijection_fn,
     Cutoff_fn,
-    Function,
-    Kernel,
+    Map_fn,
+    Descriptor_fn,
+    Kernel_fn,
+    Descriptor,
     Model,
     NeighborList,
     ChemPar,

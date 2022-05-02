@@ -1,12 +1,10 @@
 # +
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from torch import Tensor
 
-from .function import Function
 
-
-class Kernel(Function):
+class Kernel_fn(ABC):
     @abstractmethod
     def function(self, uv: Tensor, u: Tensor, v: Tensor) -> Tensor:
         """

@@ -1,15 +1,13 @@
 # +
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from .function import Function
 
-
-class Cutoff_fn(Function):
+class Cutoff_fn(ABC):
     """
     Smooth cutoff functions.
 

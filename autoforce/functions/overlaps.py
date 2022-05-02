@@ -7,11 +7,11 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core import Function
+from autoforce.core import Descriptor_fn
 from autoforce.functions.harmonics import Harmonics
 
 
-class Overlaps(Function):
+class Overlaps(Descriptor_fn):
     def __init__(self, lmax: int, nmax: int) -> None:
         super().__init__()
         self.harmonics = Harmonics(lmax)
