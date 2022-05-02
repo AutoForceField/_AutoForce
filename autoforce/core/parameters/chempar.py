@@ -7,7 +7,7 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from ..function import Bijection_fn
+from ..functions import Bijection_fn
 
 
 class ChemPar:

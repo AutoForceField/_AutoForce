@@ -4,8 +4,8 @@ from typing import Any, Sequence, Union
 
 from torch import Tensor
 
-from ..dataclass import Conf, Target
-from ..parameter import Cutoff
+from ..dataclasses import Conf, Target
+from ..parameters import Cutoff
 
 
 class Regressor(ABC):

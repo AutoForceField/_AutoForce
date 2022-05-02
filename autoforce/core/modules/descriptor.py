@@ -8,9 +8,9 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from .dataclass import Basis, Conf, LocalDes, LocalEnv
-from .function import Cutoff_fn, Descriptor_fn
-from .parameter import Cutoff
+from ..dataclasses import Basis, Conf, LocalDes, LocalEnv
+from ..functions import Cutoff_fn, Descriptor_fn
+from ..parameters import Cutoff
 
 
 class Descriptor:
