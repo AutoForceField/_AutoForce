@@ -8,7 +8,7 @@ import autoforce.cfg as cfg
 
 from ..dataclass import Conf, Target
 from ..descriptor import Descriptor
-from ..function import Kernel
+from ..function import Kernel_fn
 from ..parameter import ChemPar, Cutoff
 from .regressor import Regressor
 
@@ -20,7 +20,7 @@ class KernelRegressor(Regressor):
     """
 
     def __init__(
-        self, descriptor: Descriptor, kernel: Kernel, exponent: ChemPar
+        self, descriptor: Descriptor, kernel: Kernel_fn, exponent: ChemPar
     ) -> None:
         """
         TODO:

@@ -1,12 +1,10 @@
 # +
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from torch import Tensor
 
-from .function import Function
 
-
-class Bijection(Function):
+class Bijection_fn(ABC):
     """
     A "Bijection" is a "Function" which, in
     addition to the "function" method, has

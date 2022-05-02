@@ -1,13 +1,14 @@
 # +
 import itertools
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Tuple, Union
 
 import torch
+from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from .dataclass import Basis, Conf, LocalDes, LocalEnv, Tensor, TensorDict
+from .dataclass import Basis, Conf, LocalDes, LocalEnv
 from .function import Cutoff_fn, Descriptor_fn
 from .parameter import Cutoff
 
@@ -63,7 +64,7 @@ class Descriptor:
 
     def descriptor(
         self, number: Tensor, numbers: Tensor, rij: Tensor, cij: Tensor
-    ) -> TensorDict:
+    ) -> Dict[Union[int, Tuple[int, ...]], Tensor]:
         dij = rij.norm(dim=1)
         m = dij < cij
         wij = self.cutoff_fn.function(dij[m], cij[m])

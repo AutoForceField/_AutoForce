@@ -1,7 +1,7 @@
 # +
-from typing import Optional
+from typing import Dict, Optional, Tuple, Union
 
-from ._typing import Tensor, TensorDict
+from torch import Tensor
 
 
 class LocalDes:
@@ -43,7 +43,7 @@ class LocalDes:
 
     def __init__(
         self,
-        descriptor: TensorDict,
+        descriptor: Dict[Union[int, Tuple[int, ...]], Tensor],
         index: Optional[int] = None,
         species: Optional[int] = None,
         norm: Optional[Tensor] = None,

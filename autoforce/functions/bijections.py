@@ -2,10 +2,10 @@
 import torch
 from torch import Tensor
 
-from autoforce.core import Bijection
+from autoforce.core import Bijection_fn
 
 
-class FiniteRange(Bijection):
+class FiniteRange(Bijection_fn):
     def __init__(self, a: float, b: float) -> None:
 
         if a > b:

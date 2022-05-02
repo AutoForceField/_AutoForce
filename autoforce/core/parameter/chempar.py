@@ -7,7 +7,7 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from ..function import Bijection
+from ..function import Bijection_fn
 
 
 class ChemPar:
@@ -80,7 +80,7 @@ class ChemPar:
         clone: Optional[bool] = True,
         keylen: Optional[int] = None,
         permsym: Optional[bool] = True,
-        bijection: Optional[Bijection] = None,
+        bijection: Optional[Bijection_fn] = None,
         requires_grad: Optional[bool] = False,
     ) -> None:
         """
