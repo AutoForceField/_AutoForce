@@ -1,5 +1,5 @@
 # +
-from typing import List
+from typing import List, Union
 
 from torch import Tensor
 
@@ -52,4 +52,4 @@ class LocalEnv:
         self.rij = rij
 
         # cache
-        self._cache_d: List[LocalDes] = []
+        self._cache_d: List[Union[LocalDes, None]] = []

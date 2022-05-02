@@ -13,6 +13,17 @@ from ..functions import Cutoff_fn, Descriptor_fn
 from ..parameters import Cutoff
 
 
+def scalar_product(
+    x: Dict[Union[int, Tuple[int, ...]], Tensor],
+    y: Dict[Union[int, Tuple[int, ...]], Tensor],
+) -> Tensor:
+    keys = set(x.keys()).intersection(set(y.keys()))
+    p = cfg.zero
+    for k in keys:
+        p = p + (x[k] * y[k]).sum()
+    return p
+
+
 class Descriptor:
     """
     A Descriptor converts a "LocalEnv" object
@@ -77,10 +88,10 @@ class Descriptor:
             e._cache_d.append(None)
         if e._cache_d[self.index] is None:
             cij = self.cutoff(e.number, e.numbers)
+            _species = int(e.number)
             _d = self.descriptor(e.number, e.numbers, e.rij, cij)
-            d = LocalDes(_d)
-            d.norm = self.scalar_product(d, d).sqrt().view([])
-            d.species = int(e.number)
+            _norm = scalar_product(_d, _d).sqrt().view([])
+            d = LocalDes(_species, _d, _norm)
             e._cache_d[self.index] = d
         return e._cache_d[self.index]
 
@@ -89,21 +100,13 @@ class Descriptor:
             raise RuntimeError(f"{conf._cache_e = }")
         return [self.get_descriptor(l) for l in conf._cache_e]
 
-    def scalar_product(self, x: LocalDes, y: LocalDes) -> Tensor:
-        kx = set(x.descriptor.keys())
-        ky = set(y.descriptor.keys())
-        product = cfg.zero
-        for k in kx.intersection(ky):
-            product = product + (x.descriptor[k] * y.descriptor[k]).sum()
-        return product
-
     def get_scalar_products(self, d: LocalDes, basis: Basis) -> List[Tensor]:
         # 1. update cache: d._cache_p
         while len(d._cache_p) <= basis.index:
             d._cache_p.append([])
         m = len(d._cache_p[basis.index])
         new = [
-            self.scalar_product(base, d) if active else None
+            scalar_product(base.tensors, d.tensors) if active else None
             for base, active in zip(
                 basis.descriptors[d.species][m:], basis.active[d.species][m:]
             )
