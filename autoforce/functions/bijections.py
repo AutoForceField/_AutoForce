@@ -5,25 +5,24 @@ from torch import Tensor
 from autoforce.core import Bijection_fn
 
 
-class FiniteRange(Bijection_fn):
+class Identity_bi(Bijection_fn):
+    def function(self, x: Tensor) -> Tensor:
+        return x
+
+    def inverse(self, x: Tensor) -> Tensor:
+        return x
+
+
+class Range_bi(Bijection_fn):
     def __init__(self, a: float, b: float) -> None:
-
-        if a > b:
-            raise RuntimeError("Lower bound is larger " "than upper bound!")
-
-        self.a = torch.as_tensor(a)
-        self.b = torch.as_tensor(b)
+        assert b > a
+        self.a = a
         self.l = b - a
 
     def function(self, x: Tensor) -> Tensor:
-        x = torch.as_tensor(x)
-        y = self.a + self.l * torch.special.expit(x)
+        y = self.a + self.l * torch.special.expit(torch.as_tensor(x))
         return y
 
     def inverse(self, y: Tensor) -> Tensor:
-        y = torch.as_tensor(y)
         x = (y - self.a) / self.l
-        return torch.special.logit(x)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.a}, {self.b})"
+        return torch.special.logit(torch.as_tensor(x))
