@@ -1,7 +1,7 @@
 # +
 from collections import defaultdict
 from itertools import repeat
-from typing import Dict, Iterable, Iterator, Mapping, Optional, Tuple, Union
+from typing import Dict, Iterable, Iterator, Mapping, Optional, Sized, Tuple, Union
 
 __all__ = ["ParamMap", "SymParamMap"]
 
@@ -52,7 +52,10 @@ class ParamMap(Mapping):
     # public methods:
     ...
 
-    # private methods
+    # private methods:
+    # TODO:
+    # 3 "assert" statements slowdown _broadcast by ~10%.
+    # They can be eliminated one API is stablished.
     def _key(self, k: KeyType) -> TupleKeyType:
         key = (k,) if isinstance(k, int) else k
         assert len(key) == self.indices, f"len(key) should be {self.indices}!"
@@ -62,9 +65,9 @@ class ParamMap(Mapping):
         self, *args: Union[SpeciesType, Iterable[SpeciesType]]
     ) -> Tuple[ParamType, ...]:
         assert len(args) == self.indices, f"Num args should be {self.indices}!"
-        # assert any(
-        #    tuple(isinstance(arg, Sized) for arg in args)
-        # ), "At least one of args should be Sized"
+        assert any(
+            tuple(isinstance(arg, Sized) for arg in args)
+        ), "At least one of args should be Sized"
         bcast = tuple(arg if isinstance(arg, Iterable) else repeat(arg) for arg in args)
         ret = tuple(self.dict[self._key(k)] for k in zip(*bcast))
         return ret
