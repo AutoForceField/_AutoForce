@@ -3,10 +3,10 @@ from abc import abstractmethod
 from collections import defaultdict
 from collections.abc import MutableMapping
 from itertools import product, repeat
-from typing import Any, Hashable, Iterable, Iterator, Sized, Union
+from typing import Any, Hashable, Iterable, Iterator, Optional, Sized, Union
 
 
-class ProxyMap(MutableMapping):
+class ParameterMapping(MutableMapping):
     def __init__(self, dict_: Union[dict, defaultdict]) -> None:
         self._dict = dict_.copy()
         self._dict.clear()
@@ -54,12 +54,12 @@ class ProxyMap(MutableMapping):
         return {key: self._dict[key] for key in keys}
 
 
-class DefaultProxyMap(ProxyMap):
-    def __init__(self, default: Any, dict_: dict) -> None:
+class DefaultParameterMapping(ParameterMapping):
+    def __init__(self, default: Any, dict_: Optional[dict] = None) -> None:
         def callable_():
             return default
 
-        _dict = defaultdict(callable_, dict_)
+        _dict = defaultdict(callable_, {} if dict_ is None else dict_)
         super().__init__(_dict)
 
 
@@ -71,3 +71,11 @@ class TupleKey:
 class SortedKey:
     def _key(self, key: Any) -> tuple:
         return tuple(sorted(key)) if isinstance(key, tuple) else (key,)
+
+
+class AsymmetricMapping(TupleKey, DefaultParameterMapping):
+    pass
+
+
+class SymmetricMapping(SortedKey, DefaultParameterMapping):
+    pass
