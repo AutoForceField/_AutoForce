@@ -3,7 +3,7 @@ import torch
 
 import autoforce.cfg as cfg
 from autoforce.core import ChemPar, ReducedPar
-from autoforce.functions import FiniteRange
+from autoforce.functions import Range_bi
 
 
 def test_ChemPar() -> bool:
@@ -56,7 +56,7 @@ def test_ChemPar() -> bool:
     s.as_dict([1])
 
     #
-    const = FiniteRange(0.0, 10.0)
+    const = Range_bi(0.0, 10.0)
     s = ChemPar(values={(1, 2): 1.0, (2, 2): 7.0}, default=3.0, bijection=const)
     assert s(a, b).allclose(tensor([3.0, 1.0, 3.0]))
     assert s(b, b).allclose(tensor([3.0, 7.0, 3.0]))
