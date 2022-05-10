@@ -1,11 +1,9 @@
 # +
-from typing import Sequence, Union
-
 import torch
 from torch import Tensor
 
 
-def r_theta_phi(v: Tensor) -> (Tensor, Tensor, Tensor):
+def r_theta_phi(v: Tensor) -> tuple[Tensor, Tensor, Tensor]:
     """
     v: (n, 3)-shaped tensor of Cartesian coordinates
 
@@ -36,9 +34,7 @@ def cartesian(r: Tensor, theta: Tensor, phi: Tensor) -> Tensor:
     return torch.stack([x, y, z]).T
 
 
-def rotation_matrix(
-    axis: Union[Tensor, Sequence[float]], theta: Union[Tensor, float]
-) -> Tensor:
+def rotation_matrix(axis: Tensor, theta: Tensor) -> Tensor:
     """
     axis: rotation axis (length 3)
 
@@ -85,7 +81,7 @@ def spherical_vector_to_cartesian(
     v_r: Tensor,
     v_theta: Tensor,
     v_phi: Tensor,
-) -> (Tensor, Tensor, Tensor):
+) -> tuple[Tensor, Tensor, Tensor]:
     """
     Transforms a vector from spherical coordinates:
         (v_r, v_theta, v_phi)
