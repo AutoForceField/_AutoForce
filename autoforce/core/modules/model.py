@@ -4,7 +4,7 @@ from typing import Any, Sequence
 import torch
 
 from ..dataclasses import Conf, Target
-from ..parameters import ReducedPar
+from ..parameters import ParameterMapping
 
 
 class Model:
@@ -19,16 +19,10 @@ class Model:
 
         """
         self.regressors = regressors
-        self._cutoff = None
 
     @property
-    def cutoff(self) -> ReducedPar:
-        if self._cutoff is None:
-            self._cutoff = ReducedPar(op=max)
-            for reg in self.regressors:
-                if reg.cutoff:
-                    self._cutoff.include(reg.cutoff)
-        return self._cutoff
+    def cutoff(self) -> ParameterMapping:
+        raise NotImplementedError("!")
 
     def fit(self, confs: Sequence[Conf]) -> None:
         """

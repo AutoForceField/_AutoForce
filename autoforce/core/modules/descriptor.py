@@ -10,7 +10,7 @@ import autoforce.cfg as cfg
 
 from ..dataclasses import Basis, Conf, LocalDes, LocalEnv
 from ..functions import Cutoff_fn, Descriptor_fn
-from ..parameters import Cutoff
+from ..parameters import ParameterMapping
 
 
 def scalar_product(
@@ -61,7 +61,10 @@ class Descriptor:
     instances = 0
 
     def __init__(
-        self, cutoff: Cutoff, cutoff_fn: Cutoff_fn, descriptor_fn: Descriptor_fn
+        self,
+        cutoff: ParameterMapping,
+        cutoff_fn: Cutoff_fn,
+        descriptor_fn: Descriptor_fn,
     ) -> None:
 
         self.cutoff = cutoff
@@ -87,7 +90,8 @@ class Descriptor:
         while len(e._cache_d) < Descriptor.instances:
             e._cache_d.append(None)
         if e._cache_d[self.index] is None:
-            cij = self.cutoff(e.number, e.numbers)
+            cij = self.cutoff.broadcast((int(e.number), e.numbers.tolist()))
+            cij = torch.as_tensor(cij)
             _species = int(e.number)
             _d = self.descriptor(e.number, e.numbers, e.rij, cij)
             _norm = scalar_product(_d, _d).sqrt().view([])

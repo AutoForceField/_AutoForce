@@ -1,6 +1,8 @@
 # +
-from .chempar import ChemPar, ReducedPar
-from .cutoff import Cutoff
-from .mapping import AsymmetricMapping, SymmetricMapping
+from .mapping import AsymmetricMapping, ParameterMapping, SymmetricMapping
 
-__all__ = ["ChemPar", "ReducedPar", "Cutoff", "SymmetricMapping", "AsymmetricMapping"]
+__all__ = [
+    "ParameterMapping",
+    "SymmetricMapping",
+    "AsymmetricMapping",
+]

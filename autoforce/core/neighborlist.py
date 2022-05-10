@@ -8,14 +8,14 @@ import torch
 from numpy import ndarray
 
 from .dataclasses import Conf, LocalEnv
-from .parameters import Cutoff
+from .parameters import ParameterMapping
 
 
 class NeighborList(ABC):
-    def __init__(self, cutoff: Optional[Cutoff] = None) -> None:
+    def __init__(self, cutoff: Optional[ParameterMapping] = None) -> None:
         self.set_cutoff(cutoff)
 
-    def set_cutoff(self, cutoff: Cutoff) -> None:
+    def set_cutoff(self, cutoff: ParameterMapping) -> None:
         self.cutoff = cutoff
 
     @abstractmethod
@@ -38,7 +38,7 @@ class NeighborList(ABC):
         # 1. Get neighborlist:
         unique = conf.unique_counts.keys()
         i, j, sij = self.get_neighborlist(
-            self.cutoff.as_dict(unique, float),
+            self.cutoff.product(unique, repeat=2),
             conf.pbc,
             conf.cell.detach().numpy(),
             conf.positions.detach().numpy(),
