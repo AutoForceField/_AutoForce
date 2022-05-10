@@ -31,3 +31,5 @@ repos:
     rev: v0.950
     hooks:
     -   id: mypy
+        args:
+          - --python-version=3.9
