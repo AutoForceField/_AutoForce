@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from autoforce.core.functions import Cutoff_fn
 from autoforce.core.modules import Descriptor
 from autoforce.core.parameters import ParameterMapping

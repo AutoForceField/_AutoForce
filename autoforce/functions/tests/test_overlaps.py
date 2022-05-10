@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from autoforce.functions.overlaps import Overlaps
 
 

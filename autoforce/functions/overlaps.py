@@ -1,7 +1,8 @@
 # +
+from __future__ import annotations
+
 from math import factorial as fac
 from math import sqrt
-from typing import Dict, Set, Tuple
 
 import torch
 from torch import Tensor
@@ -30,8 +31,8 @@ class Overlaps(Descriptor_fn):
         return self.harmonics.lmax
 
     def function(
-        self, rij: Tensor, wj: Tensor, numbers: Tensor, unique: Set[int]
-    ) -> Dict[Tuple[int, ...], Tensor]:
+        self, rij: Tensor, wj: Tensor, numbers: Tensor, unique: set[int]
+    ) -> dict[tuple[int, ...], Tensor]:
 
         # Dimensions:
         # _[s][n][l][m][j] -> [ns][nmax+1][lmax+1][lmax+1][nj]
@@ -54,7 +55,7 @@ class Overlaps(Descriptor_fn):
         c_snlm = torch.stack(_c_snlm)
 
         # 4. Sum over m (c_snlm & c^*_snlm product)
-        result: Dict[Tuple[int, ...], Tensor] = {}
+        result: dict[tuple[int, ...], Tensor] = {}
         nnl = torch.zeros(
             self.nmax + 1, self.nmax + 1, self.lmax + 1, dtype=cfg.float_t
         )

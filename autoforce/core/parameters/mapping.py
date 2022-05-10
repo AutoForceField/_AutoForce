@@ -1,13 +1,15 @@
 # +
+from __future__ import annotations
+
 from abc import abstractmethod
 from collections import defaultdict
 from collections.abc import MutableMapping
 from itertools import product, repeat
-from typing import Any, Hashable, Iterable, Iterator, Optional, Sized, Union
+from typing import Any, Hashable, Iterable, Iterator, Optional, Sized
 
 
 class ParameterMapping(MutableMapping):
-    def __init__(self, dict_: Union[dict, defaultdict]) -> None:
+    def __init__(self, dict_: dict | defaultdict) -> None:
         self._dict = dict_.copy()
         self._dict.clear()
         for k, v in dict_.items():

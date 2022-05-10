@@ -1,5 +1,5 @@
 # +
-from typing import Dict, List, Tuple, Union
+from __future__ import annotations
 
 from torch import Tensor
 
@@ -15,7 +15,7 @@ class LocalDes:
     def __init__(
         self,
         species: int,
-        tensors: Dict[Tuple[int, ...], Tensor],
+        tensors: dict[tuple[int, ...], Tensor],
         norm: Tensor,
     ) -> None:
         """
@@ -30,7 +30,7 @@ class LocalDes:
         self.norm = norm
 
         # cache
-        self._cache_p: List[List[Union[Tensor, None]]] = []
+        self._cache_p: list[list[Tensor | None]] = []
 
     def detach(self) -> "LocalDes":
         tensors = {k: t.detach() for k, t in self.tensors.items()}

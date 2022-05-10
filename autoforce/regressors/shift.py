@@ -1,5 +1,7 @@
 # +
-from typing import Sequence, Tuple
+from __future__ import annotations
+
+from typing import Sequence
 
 import torch
 from torch import Tensor
@@ -19,12 +21,12 @@ class Shift(Regressor):
     def cutoff(self) -> None:
         return None
 
-    def set_weights(self, weights: Tensor, sections: Tuple[int, ...]) -> None:
+    def set_weights(self, weights: Tensor, sections: tuple[int, ...]) -> None:
         self.weights = {s: a for s, a in zip(sections, weights)}
 
     def get_design_matrix(
         self, confs: Sequence[Conf]
-    ) -> tuple[Tensor, Tensor, Tuple[int, ...]]:
+    ) -> tuple[Tensor, Tensor, tuple[int, ...]]:
         _sections: set[int] = set()
         for conf in confs:
             _sections.update(conf.unique_counts.keys())

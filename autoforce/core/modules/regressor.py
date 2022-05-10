@@ -1,6 +1,8 @@
 # +
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Sequence, Union
+from typing import Any, Sequence
 
 from torch import Tensor
 
@@ -16,7 +18,7 @@ class Regressor(ABC):
 
     @property
     @abstractmethod
-    def cutoff(self) -> Union[ParameterMapping, None]:
+    def cutoff(self) -> ParameterMapping | None:
         """
         TODO:
 

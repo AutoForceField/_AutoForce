@@ -1,5 +1,7 @@
 # +
-from typing import List, Optional
+from __future__ import annotations
+
+from typing import Optional
 
 from torch import Tensor
 
@@ -42,7 +44,7 @@ class Conf:
         numbers: Tensor,
         positions: Tensor,
         cell: Tensor,
-        pbc: List[bool],
+        pbc: list[bool],
         target: Optional[Target] = None,
     ) -> None:
         """
@@ -68,7 +70,7 @@ class Conf:
         self.target = target
 
         # cache
-        self._cache_e: Optional[List[LocalEnv]] = None
+        self._cache_e: Optional[list[LocalEnv]] = None
 
     @property
     def requires_grad(self) -> bool:
