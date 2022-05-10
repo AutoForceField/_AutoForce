@@ -26,20 +26,4 @@ repos:
         args:
           - --max-line-length=88
           - --ignore=E741,W503
-
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.950
-    hooks:
-    -   id: mypy
-
--   repo: local
-    hooks:
-    -   id: pytest
-        name: pytest
-        stages: [commit]
-        language: system
-        entry: pytest -s -v .
-        types: [python]
-        pass_filenames: false
-        always_run: true
-        verbose: true
+          - --per-file-ignores=autoforce/core/__init__.py:F401,F403

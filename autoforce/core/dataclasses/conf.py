@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from torch import Tensor
 
-from .env import LocalEnv
 from .target import Target
 
 
@@ -33,7 +32,7 @@ class Conf:
         "target",
         "number_of_atoms",
         "unique_counts",
-        "_cache_e",
+        "_cached_local_envs",
         "_cached_isolated_atoms",
     )
 
@@ -68,7 +67,7 @@ class Conf:
         self.target = target
 
         # cache
-        self._cache_e: Optional[List[LocalEnv]] = None
+        self._cached_local_envs = None
 
     @property
     def requires_grad(self) -> bool:

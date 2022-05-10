@@ -1,5 +1,5 @@
 # +
-from typing import Any, Union
+from typing import Any, List, Union
 
 import ase
 import torch
@@ -7,10 +7,10 @@ from ase.io import read as _read
 from ase.neighborlist import wrap_positions
 
 import autoforce.cfg as cfg
-from autoforce.core.dataclasses import Conf, Target
+import autoforce.core as core
 
 
-def from_atoms(atoms: ase.Atoms) -> Conf:
+def from_atoms(atoms: ase.Atoms) -> core.Conf:
     """
     Generates a data.Conf object from a ase.Atoms object.
 
@@ -31,22 +31,21 @@ def from_atoms(atoms: ase.Atoms) -> Conf:
         if "forces" in atoms.calc.results:
             f = atoms.get_forces()
             f = torch.from_numpy(f).to(cfg.float_t)
-    target = Target(energy=e, forces=f)
+    target = core.Target(energy=e, forces=f)
 
     # 3.
-    conf = Conf(numbers, positions, cell, atoms.pbc, target=target)
+    conf = core.Conf(numbers, positions, cell, atoms.pbc, target=target)
 
     return conf
 
 
-def read(*args: Any, **kwargs: Any) -> Union[Conf, list[Conf]]:
+def read(*args: Any, **kwargs: Any) -> Union[core.Conf, List[core.Conf]]:
     """
     Reads Atoms and converts them to Conf.
     """
-    data: Union[ase.Atoms, list[ase.Atoms]] = _read(*args, **kwargs)
-    if type(data) == list:
-        return [from_atoms(x) for x in data]
-    elif type(data) == ase.Atoms:
-        return from_atoms(data)
+    data = _read(*args, **kwargs)
+    if type(data) == ase.Atoms:
+        ret = from_atoms(data)
     else:
-        raise RuntimeError("!")
+        ret = [from_atoms(x) for x in data]
+    return ret

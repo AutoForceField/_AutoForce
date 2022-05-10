@@ -1,8 +1,10 @@
 # +
+from typing import Optional
+
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core.functions import Cutoff_fn
+from autoforce.core import Cutoff_fn
 
 
 class PolynomialCut(Cutoff_fn):
@@ -12,7 +14,7 @@ class PolynomialCut(Cutoff_fn):
 
     """
 
-    def __init__(self, degree: int = 2) -> None:
+    def __init__(self, degree: Optional[int] = 2) -> None:
         super().__init__()
         if degree < 2:
             raise RuntimeError("PolynomialCut: degree is less than 2!")

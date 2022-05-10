@@ -1,11 +1,10 @@
 # +
-from math import pi, sqrt
+from math import sqrt
 
 import torch
-from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core.functions import Map_fn
+from autoforce.core import Map_fn
 
 
 class Harmonics(Map_fn):
@@ -56,13 +55,13 @@ class Harmonics(Map_fn):
     def __init__(self, lmax: int) -> None:
         super().__init__()
         self.lmax = lmax
-        self.Yoo = sqrt(1 / (4 * pi))
+        self.Yoo = torch.sqrt(1.0 / (4 * cfg.pi))
         self._al, self._bl, self._cl, self._dl = _alp(lmax)
         self.l, self.m, self.sign = _l_m_s(lmax)
         _c = (self.l**2 - self.m**2) * (2 * self.l + 1) / (2 * self.l - 1)
         self.coef = _c[1:, 1:].sqrt()
 
-    def function(self, rij: Tensor) -> Tensor:
+    def function(self, rij: torch.Tensor) -> torch.Tensor:
         """
         The input should be a Tensor with shape [:, 3].
 
@@ -113,25 +112,24 @@ class Harmonics(Map_fn):
         return Y
 
 
-def _alp(lmax: int) -> tuple[list[Tensor], list[Tensor], list[Tensor], list[Tensor]]:
+def _alp(lmax: int) -> (list, list, list, list):
     """
     (l, m)-dependent constants needed for
     calculating associated Legendre polynomials.
 
     """
-    NONE = torch.tensor(torch.nan)
-    a = [NONE, NONE]
-    b = [NONE, NONE]
+    a = [None, None]
+    b = [None, None]
     c = [torch.tensor(1.0, dtype=cfg.float_t), torch.tensor(sqrt(3), dtype=cfg.float_t)]
-    d = [NONE, torch.tensor(-sqrt(1.5), dtype=cfg.float_t)]
+    d = [None, torch.tensor(-sqrt(1.5), dtype=cfg.float_t)]
     for l in range(2, lmax + 1):
-        _aa = []
-        _bb = []
+        _a = []
+        _b = []
         for m in range(l - 1):
-            _aa.append(sqrt((4 * l**2 - 1) / (l**2 - m**2)))
-            _bb.append(-sqrt(((l - 1) ** 2 - m**2) / (4 * (l - 1) ** 2 - 1)))
-        _a = torch.tensor(_aa, dtype=cfg.float_t).reshape(-1, 1)
-        _b = torch.tensor(_bb, dtype=cfg.float_t).reshape(-1, 1)
+            _a.append(sqrt((4 * l**2 - 1) / (l**2 - m**2)))
+            _b.append(-sqrt(((l - 1) ** 2 - m**2) / (4 * (l - 1) ** 2 - 1)))
+        _a = torch.tensor(_a, dtype=cfg.float_t).reshape(-1, 1)
+        _b = torch.tensor(_b, dtype=cfg.float_t).reshape(-1, 1)
         _c = torch.tensor(sqrt(2 * l + 1), dtype=cfg.float_t)
         _d = torch.tensor(-sqrt((1 + 1 / (2 * l))), dtype=cfg.float_t)
         a.append(_a)
@@ -141,7 +139,7 @@ def _alp(lmax: int) -> tuple[list[Tensor], list[Tensor], list[Tensor], list[Tens
     return a, b, c, d
 
 
-def _l_m_s(lmax: int) -> tuple[Tensor, Tensor, Tensor]:
+def _l_m_s(lmax: int) -> (torch.Tensor, torch.Tensor):
     """
     Auxiliary function for (l, m) tables.
 

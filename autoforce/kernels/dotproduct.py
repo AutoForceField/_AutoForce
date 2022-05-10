@@ -1,9 +1,9 @@
 # +
 from torch import Tensor
 
-from autoforce.core.functions import Kernel_fn
+import autoforce.core as core
 
 
-class DotProductKernel(Kernel_fn):
+class DotProductKernel(core.Kernel_fn):
     def function(self, uv: Tensor, u: Tensor, v: Tensor) -> Tensor:
         return uv / (u * v)
