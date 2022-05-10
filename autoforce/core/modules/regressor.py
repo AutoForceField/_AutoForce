@@ -24,7 +24,7 @@ class Regressor(ABC):
         ...
 
     @abstractmethod
-    def get_design_matrix(self, confs: Sequence[Conf]) -> (Tensor, Tensor, Any):
+    def get_design_matrix(self, confs: Sequence[Conf]) -> tuple[Tensor, Tensor, Any]:
         """
         TODO:
 

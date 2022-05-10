@@ -1,7 +1,7 @@
 # +
 import itertools
 from collections import defaultdict
-from typing import Dict, List, Tuple, Union
+from typing import Union
 
 import torch
 from torch import Tensor
@@ -14,8 +14,8 @@ from ..parameters import ParameterMapping
 
 
 def scalar_product(
-    x: Dict[Union[int, Tuple[int, ...]], Tensor],
-    y: Dict[Union[int, Tuple[int, ...]], Tensor],
+    x: dict[Union[int, tuple[int, ...]], Tensor],
+    y: dict[Union[int, tuple[int, ...]], Tensor],
 ) -> Tensor:
     keys = set(x.keys()).intersection(set(y.keys()))
     p = cfg.zero
@@ -74,11 +74,11 @@ class Descriptor:
         # Assign a global index for this instance
         self.index = Descriptor.instances
         Descriptor.instances += 1
-        self.basis = tuple()
+        self.basis: tuple[Basis, ...] = tuple()
 
     def descriptor(
         self, number: Tensor, numbers: Tensor, rij: Tensor, cij: Tensor
-    ) -> Dict[Union[int, Tuple[int, ...]], Tensor]:
+    ) -> dict[Union[int, tuple[int, ...]], Tensor]:
         dij = rij.norm(dim=1)
         m = dij < cij
         wij = self.cutoff_fn.function(dij[m], cij[m])
@@ -89,22 +89,24 @@ class Descriptor:
     def get_descriptor(self, e: LocalEnv) -> LocalDes:
         while len(e._cache_d) < Descriptor.instances:
             e._cache_d.append(None)
-        if e._cache_d[self.index] is None:
-            cij = self.cutoff.broadcast((int(e.number), e.numbers.tolist()))
-            cij = torch.as_tensor(cij)
+        d = e._cache_d[self.index]
+        if d is None:
+            cij = torch.as_tensor(
+                self.cutoff.broadcast((int(e.number), e.numbers.tolist()))
+            )
             _species = int(e.number)
             _d = self.descriptor(e.number, e.numbers, e.rij, cij)
             _norm = scalar_product(_d, _d).sqrt().view([])
             d = LocalDes(_species, _d, _norm)
             e._cache_d[self.index] = d
-        return e._cache_d[self.index]
+        return d
 
-    def get_descriptors(self, conf: Conf) -> List[LocalDes]:
+    def get_descriptors(self, conf: Conf) -> list[LocalDes]:
         if conf._cache_e is None:
             raise RuntimeError(f"{conf._cache_e = }")
         return [self.get_descriptor(l) for l in conf._cache_e]
 
-    def get_scalar_products(self, d: LocalDes, basis: Basis) -> List[Tensor]:
+    def get_scalar_products(self, d: LocalDes, basis: Basis) -> list[Tensor]:
         # 1. update cache: d._cache_p
         while len(d._cache_p) <= basis.index:
             d._cache_p.append([])
@@ -121,7 +123,7 @@ class Descriptor:
         out = itertools.compress(d._cache_p[basis.index], basis.active[d.species])
         return list(out)
 
-    def get_scalar_products_dict(self, conf: Conf, basis: Basis) -> (Dict, Dict):
+    def get_scalar_products_dict(self, conf: Conf, basis: Basis) -> tuple[dict, dict]:
         prod = defaultdict(list)
         norms = defaultdict(list)
         for d in self.get_descriptors(conf):
@@ -130,7 +132,7 @@ class Descriptor:
             norms[d.species].append(d.norm)
         return prod, norms
 
-    def get_gram_dict(self, basis: Basis) -> Dict:
+    def get_gram_dict(self, basis: Basis) -> dict:
         gram = {}
         for species, descriptors in basis.descriptors.items():
             z = itertools.compress(descriptors, basis.active[species])
@@ -139,7 +141,7 @@ class Descriptor:
             )
         return gram
 
-    def new_basis(self) -> int:
+    def new_basis(self) -> Basis:
         new = Basis()
         new.index = len(self.basis)
         self.basis = (*self.basis, new)

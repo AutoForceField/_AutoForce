@@ -3,6 +3,8 @@ from typing import Any, Sequence
 
 import torch
 
+import autoforce.cfg as cfg
+
 from ..dataclasses import Conf, Target
 from ..parameters import ParameterMapping
 
@@ -30,13 +32,16 @@ class Model:
 
         """
         # 1. Targets
-        energies = []
-        forces = []
+        _energies = []
+        _forces = []
         for conf in confs:
-            energies.append(conf.target.energy)
-            forces.append(conf.target.forces)
-        energies = torch.stack(energies)
-        forces = torch.stack(forces).view(-1)
+            # TODO:
+            if conf.target.energy is not None:
+                _energies.append(conf.target.energy)
+            if conf.target.forces is not None:
+                _forces.append(conf.target.forces)
+        energies = torch.stack(_energies)
+        forces = torch.stack(_forces).view(-1)
         targets = torch.cat([energies, forces])
 
         # 2.
@@ -69,7 +74,7 @@ class Model:
         TODO:
 
         """
-        t = Target(energy=0, forces=0)
+        t = Target(energy=cfg.zero, forces=cfg.zero)
         for reg in self.regressors:
             _t = reg.get_target(conf)
             t.energy += _t.energy
