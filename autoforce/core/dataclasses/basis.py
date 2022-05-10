@@ -1,9 +1,7 @@
 # +
 import itertools
 from collections import defaultdict
-from typing import Dict, List
-
-from torch import Tensor
+from typing import Dict
 
 from .des import LocalDes
 
@@ -21,10 +19,10 @@ class Basis:
         self.descriptors[d.species].append(d.detach())
         self.active[d.species].append(True)
 
-    def count(self) -> Dict[int, int]:
+    def count(self) -> Dict:
         return {s: a.count(True) for s, a in self.active.items()}
 
-    def norms(self) -> Dict[int, List[Tensor]]:
+    def norms(self) -> Dict:
         return {
             s: [d.norm for d in itertools.compress(self.descriptors[s], a)]
             for s, a in self.active.items()

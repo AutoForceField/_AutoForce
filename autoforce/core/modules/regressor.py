@@ -5,7 +5,7 @@ from typing import Any, Sequence, Union
 from torch import Tensor
 
 from ..dataclasses import Conf, Target
-from ..parameters import ParameterMapping
+from ..parameters import Cutoff
 
 
 class Regressor(ABC):
@@ -16,7 +16,7 @@ class Regressor(ABC):
 
     @property
     @abstractmethod
-    def cutoff(self) -> Union[ParameterMapping, None]:
+    def cutoff(self) -> Union[Cutoff, None]:
         """
         TODO:
 
@@ -24,7 +24,7 @@ class Regressor(ABC):
         ...
 
     @abstractmethod
-    def get_design_matrix(self, confs: Sequence[Conf]) -> tuple[Tensor, Tensor, Any]:
+    def get_design_matrix(self, confs: Sequence[Conf]) -> (Tensor, Tensor, Any):
         """
         TODO:
 

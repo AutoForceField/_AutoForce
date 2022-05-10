@@ -1,9 +1,7 @@
 # +
-from typing import List, Union
+from typing import Optional
 
 from torch import Tensor
-
-from .des import LocalDes
 
 
 class LocalEnv:
@@ -24,7 +22,7 @@ class LocalEnv:
         "neighbors",
         "numbers",
         "rij",
-        "_cache_d",
+        "_cached_descriptors",
     )
 
     def __init__(
@@ -34,6 +32,7 @@ class LocalEnv:
         neighbors: Tensor,
         numbers: Tensor,
         rij: Tensor,
+        dij: Optional[Tensor] = None,
     ) -> None:
         """
         index    index of the central atom in the
@@ -52,4 +51,4 @@ class LocalEnv:
         self.rij = rij
 
         # cache
-        self._cache_d: List[Union[LocalDes, None]] = []
+        self._cached_descriptors = []
