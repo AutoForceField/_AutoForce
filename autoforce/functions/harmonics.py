@@ -4,7 +4,7 @@ from math import sqrt
 import torch
 
 import autoforce.cfg as cfg
-from autoforce.core import Map_fn
+from autoforce.core.functions import Map_fn
 
 
 class Harmonics(Map_fn):

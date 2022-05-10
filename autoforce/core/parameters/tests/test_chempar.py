@@ -2,8 +2,8 @@
 import torch
 
 import autoforce.cfg as cfg
-from autoforce.core import ChemPar, ReducedPar
-from autoforce.functions import Range_bi
+from autoforce.core.parameters import ChemPar, ReducedPar
+from autoforce.functions.bijections import Range_bi
 
 
 def test_ChemPar() -> bool:

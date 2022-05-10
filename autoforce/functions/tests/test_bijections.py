@@ -1,7 +1,7 @@
 # +
 import torch
 
-from autoforce.functions import Range_bi
+from autoforce.functions.bijections import Range_bi
 
 
 def test_Range_bi() -> bool:

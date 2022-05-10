@@ -7,7 +7,7 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core import Descriptor_fn
+from autoforce.core.functions import Descriptor_fn
 from autoforce.functions.harmonics import Harmonics
 
 

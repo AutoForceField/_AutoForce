@@ -4,7 +4,7 @@ from typing import Optional
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core import Cutoff_fn
+from autoforce.core.functions import Cutoff_fn
 
 
 class PolynomialCut(Cutoff_fn):

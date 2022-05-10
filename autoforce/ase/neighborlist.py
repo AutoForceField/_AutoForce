@@ -4,7 +4,7 @@ from typing import Dict, List
 from ase.neighborlist import primitive_neighbor_list
 from numpy import ndarray
 
-from autoforce.core import NeighborList
+from autoforce.core.neighborlist import NeighborList
 
 
 class ASE_NeighborList(NeighborList):

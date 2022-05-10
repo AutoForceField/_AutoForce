@@ -7,10 +7,10 @@ from ase.io import read as _read
 from ase.neighborlist import wrap_positions
 
 import autoforce.cfg as cfg
-import autoforce.core as core
+from autoforce.core.dataclasses import Conf, Target
 
 
-def from_atoms(atoms: ase.Atoms) -> core.Conf:
+def from_atoms(atoms: ase.Atoms) -> Conf:
     """
     Generates a data.Conf object from a ase.Atoms object.
 
@@ -31,15 +31,15 @@ def from_atoms(atoms: ase.Atoms) -> core.Conf:
         if "forces" in atoms.calc.results:
             f = atoms.get_forces()
             f = torch.from_numpy(f).to(cfg.float_t)
-    target = core.Target(energy=e, forces=f)
+    target = Target(energy=e, forces=f)
 
     # 3.
-    conf = core.Conf(numbers, positions, cell, atoms.pbc, target=target)
+    conf = Conf(numbers, positions, cell, atoms.pbc, target=target)
 
     return conf
 
 
-def read(*args: Any, **kwargs: Any) -> Union[core.Conf, List[core.Conf]]:
+def read(*args: Any, **kwargs: Any) -> Union[Conf, List[Conf]]:
     """
     Reads Atoms and converts them to Conf.
     """

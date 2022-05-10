@@ -2,7 +2,7 @@
 import torch
 from torch import Tensor
 
-from autoforce.core import Bijection_fn
+from autoforce.core.functions import Bijection_fn
 
 
 class Identity_bi(Bijection_fn):
