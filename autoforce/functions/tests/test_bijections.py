@@ -1,16 +1,16 @@
 # +
 import torch
 
-from autoforce.functions.bijections import Range_bi
+from autoforce.functions import FiniteRange
 
 
-def test_Range_bi() -> bool:
-    r = Range_bi(0.0, 1.0)
+def test_FiniteRange() -> bool:
+    r = FiniteRange(0.0, 1.0)
     x = torch.tensor([0.0, 0.5, 1.0])
     test = r.function(r.inverse(x)).allclose(x)
     return test
 
 
 if __name__ == "__main__":
-    a = test_Range_bi()
+    a = test_FiniteRange()
     print(a)
