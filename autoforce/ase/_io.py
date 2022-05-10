@@ -1,5 +1,5 @@
 # +
-from typing import Any, List, Union
+from typing import Any, Union
 
 import ase
 import torch
@@ -39,13 +39,14 @@ def from_atoms(atoms: ase.Atoms) -> Conf:
     return conf
 
 
-def read(*args: Any, **kwargs: Any) -> Union[Conf, List[Conf]]:
+def read(*args: Any, **kwargs: Any) -> Union[Conf, list[Conf]]:
     """
     Reads Atoms and converts them to Conf.
     """
-    data = _read(*args, **kwargs)
-    if type(data) == ase.Atoms:
-        ret = from_atoms(data)
+    data: Union[ase.Atoms, list[ase.Atoms]] = _read(*args, **kwargs)
+    if type(data) == list:
+        return [from_atoms(x) for x in data]
+    elif type(data) == ase.Atoms:
+        return from_atoms(data)
     else:
-        ret = [from_atoms(x) for x in data]
-    return ret
+        raise RuntimeError("!")

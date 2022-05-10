@@ -15,7 +15,7 @@ class ASE_NeighborList(NeighborList):
         cell: ndarray,
         positions: ndarray,
         atomic_numbers: ndarray,
-    ) -> (ndarray, ndarray, ndarray):
+    ) -> tuple[ndarray, ndarray, ndarray]:
 
         i, j, sij = primitive_neighbor_list(
             "ijS", pbc, cell, positions, cutoff, numbers=atomic_numbers

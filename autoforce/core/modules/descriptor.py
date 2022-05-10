@@ -1,7 +1,6 @@
 # +
 import itertools
 from collections import defaultdict
-from typing import Union
 
 import torch
 from torch import Tensor
@@ -14,8 +13,8 @@ from ..parameters import ParameterMapping
 
 
 def scalar_product(
-    x: dict[Union[int, tuple[int, ...]], Tensor],
-    y: dict[Union[int, tuple[int, ...]], Tensor],
+    x: dict[tuple[int, ...], Tensor],
+    y: dict[tuple[int, ...], Tensor],
 ) -> Tensor:
     keys = set(x.keys()).intersection(set(y.keys()))
     p = cfg.zero
@@ -78,7 +77,7 @@ class Descriptor:
 
     def descriptor(
         self, number: Tensor, numbers: Tensor, rij: Tensor, cij: Tensor
-    ) -> dict[Union[int, tuple[int, ...]], Tensor]:
+    ) -> dict[tuple[int, ...], Tensor]:
         dij = rij.norm(dim=1)
         m = dij < cij
         wij = self.cutoff_fn.function(dij[m], cij[m])

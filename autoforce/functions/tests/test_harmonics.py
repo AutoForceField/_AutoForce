@@ -65,7 +65,7 @@ def test_Harmonics_rotational_invariance(lmax: int = 10, size: int = 1000) -> bo
     """
 
     # unit vectors in x-z plane
-    theta = torch.linspace(0, cfg.pi, size, dtype=cfg.float_t)
+    theta = torch.linspace(0, float(cfg.pi), size, dtype=cfg.float_t)
     x = theta.sin()
     y = torch.zeros_like(x)
     z = theta.cos()
@@ -88,8 +88,8 @@ def test_Harmonics_rotational_invariance(lmax: int = 10, size: int = 1000) -> bo
 
     # errors
     error = _1.sub(1.0).abs().max().detach()
-    _1.sum().backward()
-    grad_error = xyz.grad.norm(dim=1).sub(3).abs().max()
+    (grad,) = torch.autograd.grad(_1.sum(), xyz)
+    grad_error = grad.norm(dim=1).sub(3).abs().max()
 
     assert float(error) < 1e-7
     assert float(grad_error) < 1e-7

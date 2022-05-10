@@ -15,7 +15,7 @@ class LocalDes:
     def __init__(
         self,
         species: int,
-        tensors: Dict[Union[int, Tuple[int, ...]], Tensor],
+        tensors: Dict[Tuple[int, ...], Tensor],
         norm: Tensor,
     ) -> None:
         """
