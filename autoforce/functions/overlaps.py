@@ -7,7 +7,7 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core import Descriptor_fn
+from autoforce.core.functions import Descriptor_fn
 from autoforce.functions.harmonics import Harmonics
 
 
@@ -31,7 +31,7 @@ class Overlaps(Descriptor_fn):
 
     def function(
         self, rij: Tensor, wj: Tensor, numbers: Tensor, unique: Set[int]
-    ) -> Dict[Tuple[int, int], Tensor]:
+    ) -> Dict[Tuple[int, ...], Tensor]:
 
         # Dimensions:
         # _[s][n][l][m][j] -> [ns][nmax+1][lmax+1][lmax+1][nj]
@@ -48,13 +48,13 @@ class Overlaps(Descriptor_fn):
         f_nlmj = r_nj[:, None, None] * y_lmj[None]
 
         # 3. Density per species
-        c_snlm = []
+        _c_snlm = []
         for k, z in enumerate(unique):
-            c_snlm.append(f_nlmj[..., numbers == z].sum(dim=-1))
-        c_snlm = torch.stack(c_snlm)
+            _c_snlm.append(f_nlmj[..., numbers == z].sum(dim=-1))
+        c_snlm = torch.stack(_c_snlm)
 
         # 4. Sum over m (c_snlm & c^*_snlm product)
-        result = {}
+        result: Dict[Tuple[int, ...], Tensor] = {}
         nnl = torch.zeros(
             self.nmax + 1, self.nmax + 1, self.lmax + 1, dtype=cfg.float_t
         )
@@ -81,7 +81,7 @@ def _nnl(lmax: int, nmax: int) -> Tensor:
     return (a[None] * a[:, None]).sqrt().to(cfg.float_t)
 
 
-def _2sq(nmax: int) -> (Tensor, Tensor, Tensor):
+def _2sq(nmax: int) -> tuple[Tensor, Tensor, Tensor]:
     ui, uj = torch.triu_indices(nmax + 1, nmax + 1)
     sq = (2.0 - torch.eye(nmax + 1, dtype=cfg.float_t)).sqrt()
     return ui, uj, sq[ui, uj, None]

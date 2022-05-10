@@ -3,8 +3,8 @@ import torch
 from scipy.special import sph_harm
 
 import autoforce.cfg as cfg
-from autoforce.functions import Harmonics
 from autoforce.functions.coordinates import r_theta_phi
+from autoforce.functions.harmonics import Harmonics
 
 
 def _scipy_harmonics(rij: torch.Tensor, lmax: int) -> torch.Tensor:
@@ -26,7 +26,7 @@ def _scipy_harmonics(rij: torch.Tensor, lmax: int) -> torch.Tensor:
     return rlm
 
 
-def test_Harmonics_scipy(lmax: int = 10) -> float:
+def test_Harmonics_scipy(lmax: int = 10) -> bool:
     """
     Test if "Harmonics" is consistent scipy.
 
@@ -46,12 +46,11 @@ def test_Harmonics_scipy(lmax: int = 10) -> float:
         b = rlm.function(r)
         error.append((a - b).abs().max())
 
-    return float(max(error))
+    assert float(max(error)) < 1e-7
+    return True
 
 
-def test_Harmonics_rotational_invariance(
-    lmax: int = 10, size: int = 1000
-) -> (float, float):
+def test_Harmonics_rotational_invariance(lmax: int = 10, size: int = 1000) -> bool:
     """
     Test if "Harmonics" satisfies a known rotational
     invariance equation for spherical harmonics.
@@ -66,7 +65,7 @@ def test_Harmonics_rotational_invariance(
     """
 
     # unit vectors in x-z plane
-    theta = torch.linspace(0, cfg.pi, size, dtype=cfg.float_t)
+    theta = torch.linspace(0, float(cfg.pi), size, dtype=cfg.float_t)
     x = theta.sin()
     y = torch.zeros_like(x)
     z = theta.cos()
@@ -89,10 +88,12 @@ def test_Harmonics_rotational_invariance(
 
     # errors
     error = _1.sub(1.0).abs().max().detach()
-    _1.sum().backward()
-    grad_error = xyz.grad.norm(dim=1).sub(3).abs().max()
+    (grad,) = torch.autograd.grad(_1.sum(), xyz)
+    grad_error = grad.norm(dim=1).sub(3).abs().max()
 
-    return float(error), float(grad_error)
+    assert float(error) < 1e-7
+    assert float(grad_error) < 1e-7
+    return True
 
 
 if __name__ == "__main__":

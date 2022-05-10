@@ -1,5 +1,5 @@
 # +
-from typing import Dict, Sequence, Tuple
+from typing import Sequence
 
 import torch
 from torch import Tensor
@@ -8,7 +8,7 @@ import autoforce.cfg as cfg
 
 from ..dataclasses import Conf, Target
 from ..functions import Kernel_fn
-from ..parameters import ChemPar, Cutoff
+from ..parameters import ParameterMapping
 from .descriptor import Descriptor
 from .regressor import Regressor
 
@@ -20,7 +20,7 @@ class KernelRegressor(Regressor):
     """
 
     def __init__(
-        self, descriptor: Descriptor, kernel: Kernel_fn, exponent: ChemPar
+        self, descriptor: Descriptor, kernel: Kernel_fn, exponent: ParameterMapping
     ) -> None:
         """
         TODO:
@@ -32,7 +32,7 @@ class KernelRegressor(Regressor):
         self.exponent = exponent
 
     @property
-    def cutoff(self) -> Cutoff:
+    def cutoff(self) -> ParameterMapping:
         return self.descriptor.cutoff
 
     def _kernel(self, s: int, uv: Tensor, u: Tensor, v: Tensor) -> Tensor:
@@ -41,7 +41,7 @@ class KernelRegressor(Regressor):
     def get_design_matrix(
         self,
         confs: Sequence[Conf],
-    ) -> (Tensor, Tensor, Tuple[Tuple[int, int], ...]):
+    ) -> tuple[Tensor, Tensor, tuple[tuple[int, int], ...]]:
         Ke = []
         Kf = []
         sections = tuple((s, c) for s, c in self.basis.count().items())
@@ -59,14 +59,14 @@ class KernelRegressor(Regressor):
                 kf.append(f)
             Ke.append(torch.cat(ke, dim=1))
             Kf.append(torch.cat(kf, dim=1))
-        Ke = torch.cat(Ke)
-        Kf = torch.cat(Kf)
-        return Ke, Kf, sections
+        Ke_cat = torch.cat(Ke)
+        Kf_cat = torch.cat(Kf)
+        return Ke_cat, Kf_cat, sections
 
     def get_design_dict(
         self,
         conf: Conf,
-    ) -> Dict:
+    ) -> dict:
         design_dict = {}
         basis_norms = self.basis.norms()
         products, norms = self.descriptor.get_scalar_products_dict(conf, self.basis)
@@ -84,12 +84,12 @@ class KernelRegressor(Regressor):
                 (dk,) = torch.autograd.grad(k, conf.positions, retain_graph=True)
                 kern.append(k.detach())
                 kern_grad.append(dk.view(-1, 1))
-            kern = torch.stack(kern).view(1, -1)
-            kern_grad = torch.cat(kern_grad, dim=1)
-            design_dict[species] = (kern, -kern_grad)
+            kern_cat = torch.stack(kern).view(1, -1)
+            kern_grad_cat = torch.cat(kern_grad, dim=1)
+            design_dict[species] = (kern_cat, -kern_grad_cat)
         return design_dict
 
-    def get_basis_overlaps(self) -> Dict:
+    def get_basis_overlaps(self) -> dict:
         gram_dict = self.descriptor.get_gram_dict(self.basis)
         basis_norms = self.basis.norms()
         for species, gram in gram_dict.items():
@@ -100,7 +100,7 @@ class KernelRegressor(Regressor):
         return gram_dict
 
     def set_weights(
-        self, weights: Tensor, sections: Tuple[Tuple[int, int], ...]
+        self, weights: Tensor, sections: tuple[tuple[int, int], ...]
     ) -> None:
         """
         TODO:
@@ -117,7 +117,7 @@ class KernelRegressor(Regressor):
         """
         basis_norms = self.basis.norms()
         products, norms = self.descriptor.get_scalar_products_dict(conf, self.basis)
-        energy = 0
+        energy = cfg.zero
         for species, prod in products.items():
             k = self._kernel(
                 species,
@@ -129,5 +129,5 @@ class KernelRegressor(Regressor):
         if energy.grad_fn:
             (g,) = torch.autograd.grad(energy, conf.positions, retain_graph=True)
         else:
-            g = 0
+            g = cfg.zero
         return Target(energy=energy.detach(), forces=-g)
