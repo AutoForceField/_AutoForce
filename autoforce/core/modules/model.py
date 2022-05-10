@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from typing import Any, Sequence
 
 import torch
@@ -74,7 +76,10 @@ class Model:
         TODO:
 
         """
-        t = Target(energy=cfg.zero, forces=cfg.zero)
+        t = Target(
+            energy=torch.tensor(0.0, dtype=cfg.float_t),
+            forces=torch.zeros_like(conf.positions),
+        )
         for reg in self.regressors:
             _t = reg.get_target(conf)
             t.energy += _t.energy

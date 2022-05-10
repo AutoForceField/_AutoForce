@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 import torch
 from scipy.special import sph_harm
 

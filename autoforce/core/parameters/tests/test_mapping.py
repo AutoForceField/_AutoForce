@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from autoforce.core.parameters import AsymmetricMapping, SymmetricMapping
 
 

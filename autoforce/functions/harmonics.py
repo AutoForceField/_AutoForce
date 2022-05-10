@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from math import pi, sqrt
 
 import torch
@@ -99,8 +101,8 @@ class Harmonics(Map_fn):
         for m in range(2, self.lmax + 1):
             s = sin_phi * cos[-1] + cos_phi * sin[-1]
             c = cos_phi * cos[-1] - sin_phi * sin[-1]
-            sin += [s]
-            cos += [c]
+            sin.append(s)
+            cos.append(c)
 
         # 4. Spherical Harmonics
         Y = torch.zeros(self.lmax + 1, self.lmax + 1, r.size(0), dtype=cfg.float_t)

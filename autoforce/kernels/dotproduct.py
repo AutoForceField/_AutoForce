@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from torch import Tensor
 
 from autoforce.core.functions import Kernel_fn

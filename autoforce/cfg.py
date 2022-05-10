@@ -31,6 +31,8 @@ operations, a mixed precision scheme may be adopted
 in future.
 
 """
+from __future__ import annotations
+
 from math import pi as _pi
 
 import torch
