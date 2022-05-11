@@ -1,4 +1,6 @@
 # +
+from __future__ import annotations
+
 from setuptools import find_packages, setup
 
 with open("autoforce/version.py") as f:
