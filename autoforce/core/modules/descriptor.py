@@ -10,7 +10,7 @@ from torch import Tensor
 import autoforce.cfg as cfg
 
 from ..dataclasses import Basis, Conf, LocalDes, LocalEnv
-from ..functions import Cutoff_fn, Descriptor_fn
+from ..functions import Descriptor_fn, SoftZero_fn
 from ..parameters import ParameterMapping
 
 
@@ -64,12 +64,12 @@ class Descriptor:
     def __init__(
         self,
         cutoff: ParameterMapping,
-        cutoff_fn: Cutoff_fn,
+        softzero_fn: SoftZero_fn,
         descriptor_fn: Descriptor_fn,
     ) -> None:
 
         self.cutoff = cutoff
-        self.cutoff_fn = cutoff_fn
+        self.softzero_fn = softzero_fn
         self.descriptor_fn = descriptor_fn
 
         # Assign a global index for this instance
@@ -82,7 +82,7 @@ class Descriptor:
     ) -> dict[tuple[int, ...], Tensor]:
         dij = rij.norm(dim=1)
         m = dij < cij
-        wij = self.cutoff_fn.function(dij[m], cij[m])
+        wij = self.softzero_fn.function(1 - dij[m] / cij[m])
         unique = set(numbers[m].tolist())
         d = self.descriptor_fn.function(rij[m], wij, numbers[m], unique)
         return d
