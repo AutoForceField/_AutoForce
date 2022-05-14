@@ -145,15 +145,6 @@ class Descriptor:
             norms[d.species].append(d.norm)
         return prod, norms
 
-    def get_gram_dict(self, basis: Basis) -> dict:
-        gram = {}
-        for species, descriptors in basis.descriptors.items():
-            z = itertools.compress(descriptors, basis.active[species])
-            gram[species] = torch.stack(
-                [torch.stack(self.get_scalar_products(b, basis)) for b in z]
-            )
-        return gram
-
     def new_basis(self) -> Basis:
         new = Basis()
         new.index = len(self.basis)

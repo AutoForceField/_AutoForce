@@ -91,16 +91,6 @@ class KernelRegressor(Regressor):
             design_dict[species] = (kern_cat, -kern_grad_cat)
         return design_dict
 
-    def get_basis_overlaps(self) -> dict:
-        gram_dict = self.descriptor.get_gram_dict(self.basis)
-        basis_norms = self.basis.norms()
-        for species, gram in gram_dict.items():
-            norms = torch.stack(basis_norms[species])
-            gram_dict[species] = self.kernel.function(
-                gram, norms.view(1, -1), norms.view(-1, 1)
-            ).pow(self.exponent[species])
-        return gram_dict
-
     def set_weights(
         self, weights: Tensor, sections: tuple[tuple[int, int], ...]
     ) -> None:
