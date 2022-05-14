@@ -37,9 +37,6 @@ class KernelRegressor(Regressor):
     def cutoff(self) -> ParameterMapping:
         return self.descriptor.cutoff
 
-    def _kernel(self, s: int, uv: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        return self.kernel.function(uv, u, v) ** self.exponent[s]
-
     def get_design_matrix(
         self,
         confs: Sequence[Conf],
@@ -77,12 +74,15 @@ class KernelRegressor(Regressor):
             kern_grad = []
             species_norms = torch.stack(norms[species]).view(1, -1)
             for a in zip(*products[species], basis_norms[species]):
-                k = self._kernel(
-                    species,
-                    torch.stack(a[:-1]).view(1, -1),
-                    a[-1].view(1, 1),
-                    species_norms,
-                ).sum()
+                k = (
+                    self.kernel.function(
+                        torch.stack(a[:-1]).view(1, -1),
+                        a[-1].view(1, 1),
+                        species_norms,
+                    )
+                    .pow(self.exponent[species])
+                    .sum()
+                )
                 (dk,) = torch.autograd.grad(k, conf.positions, retain_graph=True)
                 kern.append(k.detach())
                 kern_grad.append(dk.view(-1, 1))
@@ -96,9 +96,9 @@ class KernelRegressor(Regressor):
         basis_norms = self.basis.norms()
         for species, gram in gram_dict.items():
             norms = torch.stack(basis_norms[species])
-            gram_dict[species] = self._kernel(
-                species, gram, norms.view(1, -1), norms.view(-1, 1)
-            )
+            gram_dict[species] = self.kernel.function(
+                gram, norms.view(1, -1), norms.view(-1, 1)
+            ).pow(self.exponent[species])
         return gram_dict
 
     def set_weights(
@@ -121,12 +121,11 @@ class KernelRegressor(Regressor):
         products, norms = self.descriptor.get_scalar_products_dict(conf, self.basis)
         energy = cfg.zero
         for species, prod in products.items():
-            k = self._kernel(
-                species,
+            k = self.kernel.function(
                 torch.stack([torch.stack(a) for a in prod]),
                 torch.stack(norms[species]).view(-1, 1),
                 torch.stack(basis_norms[species]).view(1, -1),
-            )
+            ).pow(self.exponent[species])
             energy = energy + (k @ self.weights[species]).sum()
         if energy.grad_fn:
             (g,) = torch.autograd.grad(energy, conf.positions, retain_graph=True)

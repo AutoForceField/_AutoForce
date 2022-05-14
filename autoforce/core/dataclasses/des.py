@@ -10,7 +10,7 @@ class LocalDes:
 
     """
 
-    __slots__ = ("species", "tensors", "norm", "_cache_p")
+    __slots__ = ("species", "tensors", "norm", "jacobian", "_cache_p")
 
     def __init__(
         self,
@@ -28,6 +28,7 @@ class LocalDes:
         self.species = species
         self.tensors = tensors
         self.norm = norm
+        self.jacobian = None
 
         # cache
         self._cache_p: list[list[Tensor | None]] = []

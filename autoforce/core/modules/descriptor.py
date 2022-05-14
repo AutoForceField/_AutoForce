@@ -25,6 +25,17 @@ def scalar_product(
     return p
 
 
+def vjp(
+    v: dict[tuple[int, ...], Tensor],
+    j: dict[tuple[int, ...], Tensor],
+) -> Tensor:
+    keys = set(v.keys()).intersection(set(j.keys()))
+    p = cfg.zero
+    for k in keys:
+        p = p + (v[k][:, None, None] * j[k]).sum(dim=0)
+    return p
+
+
 class Descriptor:
     """
     A Descriptor converts a "LocalEnv" object
@@ -78,13 +89,15 @@ class Descriptor:
         self.basis: tuple[Basis, ...] = tuple()
 
     def descriptor(
-        self, number: Tensor, numbers: Tensor, rij: Tensor, cij: Tensor
+        self, number: int, numbers: list[int], rij: Tensor, cij: Tensor
     ) -> dict[tuple[int, ...], Tensor]:
         dij = rij.norm(dim=1)
         m = dij < cij
         wij = self.softzero_fn.function(1 - dij[m] / cij[m])
-        unique = set(numbers[m].tolist())
-        d = self.descriptor_fn.function(rij[m], wij, numbers[m], unique)
+        within = list(itertools.compress(numbers, m))
+        unique = set(within)
+        _numbers = torch.tensor(within)
+        d = self.descriptor_fn.function(rij[m], wij, _numbers, unique)
         return d
 
     def get_descriptor(self, e: LocalEnv) -> LocalDes:
@@ -92,13 +105,12 @@ class Descriptor:
             e._cache_d.append(None)
         d = e._cache_d[self.index]
         if d is None:
-            cij = torch.as_tensor(
-                self.cutoff.broadcast((int(e.number), e.numbers.tolist()))
-            )
-            _species = int(e.number)
-            _d = self.descriptor(e.number, e.numbers, e.rij, cij)
+            number = int(e.number)
+            numbers = e.numbers.tolist()
+            cij = torch.as_tensor(self.cutoff.broadcast((number, numbers)))
+            _d = self.descriptor(number, numbers, e.rij, cij)
             _norm = scalar_product(_d, _d).sqrt().view([])
-            d = LocalDes(_species, _d, _norm)
+            d = LocalDes(number, _d, _norm)
             e._cache_d[self.index] = d
         return d
 
