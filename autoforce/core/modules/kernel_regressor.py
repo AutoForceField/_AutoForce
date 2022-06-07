@@ -1,6 +1,8 @@
 # +
 from __future__ import annotations
 
+import itertools
+from collections import defaultdict
 from typing import Sequence
 
 import torch
@@ -8,7 +10,7 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from ..dataclasses import Conf, Target
+from ..dataclasses import Basis, Conf, LocalDes, Target
 from ..functions import Kernel_fn
 from ..parameters import ParameterMapping
 from .descriptor import Descriptor
@@ -29,7 +31,8 @@ class KernelRegressor(Regressor):
 
         """
         self.descriptor = descriptor
-        self.basis = descriptor.new_basis()
+        self.basis = Basis()
+        self.basis.index = 0
         self.kernel = kernel
         self.exponent = exponent
 
@@ -68,7 +71,7 @@ class KernelRegressor(Regressor):
     ) -> dict:
         design_dict = {}
         basis_norms = self.basis.norms()
-        products, norms = self.descriptor.get_scalar_products_dict(conf, self.basis)
+        products, norms = self.get_scalar_products_dict(conf)
         for species in products.keys():
             kern = []
             kern_grad = []
@@ -108,7 +111,7 @@ class KernelRegressor(Regressor):
 
         """
         basis_norms = self.basis.norms()
-        products, norms = self.descriptor.get_scalar_products_dict(conf, self.basis)
+        products, norms = self.get_scalar_products_dict(conf)
         energy = cfg.zero
         for species, prod in products.items():
             k = self.kernel.function(
@@ -122,3 +125,31 @@ class KernelRegressor(Regressor):
         else:
             g = cfg.zero
         return Target(energy=energy.detach(), forces=-g)
+
+    # ------------------------
+    def get_scalar_products_dict(self, conf: Conf) -> tuple[dict, dict]:
+        prod = defaultdict(list)
+        norms = defaultdict(list)
+        for d in self.descriptor.get_descriptors(conf):
+            k = self.get_scalar_products(d)
+            prod[d.species].append(k)
+            norms[d.species].append(d.norm)
+        return prod, norms
+
+    def get_scalar_products(self, d: LocalDes) -> list[Tensor]:
+        basis = self.basis
+        # 1. update cache: d._cache_p
+        while len(d._cache_p) <= basis.index:
+            d._cache_p.append([])
+        m = len(d._cache_p[basis.index])
+        new = [
+            self.descriptor.scalar_product(base.tensors, d.tensors) if active else None
+            for base, active in zip(
+                basis.descriptors[d.species][m:], basis.active[d.species][m:]
+            )
+        ]
+        d._cache_p[basis.index].extend(new)
+
+        # 2. retrieve from cache
+        out = itertools.compress(d._cache_p[basis.index], basis.active[d.species])
+        return list(out)
