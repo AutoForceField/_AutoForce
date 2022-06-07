@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from torch import Tensor
 
-from .des import LocalDes
+from autoforce.core.dataclasses import LocalDes
 
 
 class Basis:

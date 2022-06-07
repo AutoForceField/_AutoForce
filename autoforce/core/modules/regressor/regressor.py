@@ -6,8 +6,8 @@ from typing import Any, Sequence
 
 from torch import Tensor
 
-from ..dataclasses import Conf, Target
-from ..parameters import ParameterMapping
+from autoforce.core.dataclasses import Conf, Target
+from autoforce.core.parameters import ParameterMapping
 
 
 class Regressor(ABC):

@@ -9,11 +9,12 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
+from autoforce.core.dataclasses import Conf, LocalDes, Target
+from autoforce.core.functions import Kernel_fn
+from autoforce.core.parameters import ParameterMapping
 
-from ..dataclasses import Basis, Conf, LocalDes, Target
-from ..functions import Kernel_fn
-from ..parameters import ParameterMapping
-from .descriptor import Descriptor
+from ..descriptor import Descriptor
+from .basis import Basis
 from .regressor import Regressor
 
 
