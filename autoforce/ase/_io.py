@@ -9,12 +9,12 @@ from ase.io import read as _read
 from ase.neighborlist import wrap_positions
 
 import autoforce.cfg as cfg
-from autoforce.core.dataclasses import Conf, Target
+from autoforce.core.dataclasses import Structure, Target
 
 
-def from_atoms(atoms: ase.Atoms) -> Conf:
+def from_atoms(atoms: ase.Atoms) -> Structure:
     """
-    Generates a data.Conf object from a ase.Atoms object.
+    Generates a data.Structure object from a ase.Atoms object.
 
     """
 
@@ -36,14 +36,14 @@ def from_atoms(atoms: ase.Atoms) -> Conf:
     target = Target(energy=e, forces=f)
 
     # 3.
-    conf = Conf(numbers, positions, cell, atoms.pbc, target=target)
+    struc = Structure(numbers, positions, cell, atoms.pbc, target=target)
 
-    return conf
+    return struc
 
 
-def read(*args: Any, **kwargs: Any) -> Conf | list[Conf]:
+def read(*args: Any, **kwargs: Any) -> Structure | list[Structure]:
     """
-    Reads Atoms and converts them to Conf.
+    Reads Atoms and converts them to Structure.
     """
     data: ase.Atoms | list[ase.Atoms] = _read(*args, **kwargs)
     if type(data) == list:

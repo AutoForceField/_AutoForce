@@ -5,13 +5,13 @@ from typing import Optional
 
 from torch import Tensor
 
-from .env import LocalEnv
+from .environment import Environment
 from .target import Target
 
 
-class Conf:
+class Structure:
     """
-    An atomic configuration.
+    An atomic structure.
 
     Same role as ase.Atoms, except the data
     are stored as torch.Tensor instead of
@@ -70,7 +70,7 @@ class Conf:
         self.target = target
 
         # cache
-        self._cache_e: Optional[list[LocalEnv]] = None
+        self._cache_e: Optional[list[Environment]] = None
 
     @property
     def requires_grad(self) -> bool:

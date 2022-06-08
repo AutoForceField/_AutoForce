@@ -9,23 +9,23 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core.dataclasses import Conf, LocalDes, Target
+from autoforce.core.dataclasses import Descriptor, Structure, Target
 from autoforce.core.functions import Kernel_fn
 from autoforce.core.parameters import ParameterMapping
 
-from ..descriptor import Descriptor
+from ..descriptor_md import Descriptor_md
 from .basis import Basis
-from .regressor import Regressor
+from .regressor import Regressor_md
 
 
-class KernelRegressor(Regressor):
+class KernelRegressor_md(Regressor_md):
     """
     TODO:
 
     """
 
     def __init__(
-        self, descriptor: Descriptor, kernel: Kernel_fn, exponent: ParameterMapping
+        self, descriptor: Descriptor_md, kernel: Kernel_fn, exponent: ParameterMapping
     ) -> None:
         """
         TODO:
@@ -43,13 +43,13 @@ class KernelRegressor(Regressor):
 
     def get_design_matrix(
         self,
-        confs: Sequence[Conf],
+        structures: Sequence[Structure],
     ) -> tuple[Tensor, Tensor, tuple[tuple[int, int], ...]]:
         Ke = []
         Kf = []
         sections = tuple((s, c) for s, c in self.basis.count().items())
-        for conf in confs:
-            design_dict = self.get_design_dict(conf)
+        for struc in structures:
+            design_dict = self.get_design_dict(struc)
             ke = []
             kf = []
             for species, count in sections:
@@ -57,7 +57,7 @@ class KernelRegressor(Regressor):
                     e, f = design_dict[species]
                 else:
                     e = torch.zeros(1, count, dtype=cfg.float_t)
-                    f = torch.zeros(conf.positions.numel(), count, dtype=cfg.float_t)
+                    f = torch.zeros(struc.positions.numel(), count, dtype=cfg.float_t)
                 ke.append(e)
                 kf.append(f)
             Ke.append(torch.cat(ke, dim=1))
@@ -68,11 +68,11 @@ class KernelRegressor(Regressor):
 
     def get_design_dict(
         self,
-        conf: Conf,
+        struc: Structure,
     ) -> dict:
         design_dict = {}
         basis_norms = self.basis.norms()
-        products, norms = self.get_scalar_products_dict(conf)
+        products, norms = self.get_scalar_products_dict(struc)
         for species in products.keys():
             kern = []
             kern_grad = []
@@ -87,7 +87,7 @@ class KernelRegressor(Regressor):
                     .pow(self.exponent[species])
                     .sum()
                 )
-                (dk,) = torch.autograd.grad(k, conf.positions, retain_graph=True)
+                (dk,) = torch.autograd.grad(k, struc.positions, retain_graph=True)
                 kern.append(k.detach())
                 kern_grad.append(dk.view(-1, 1))
             kern_cat = torch.stack(kern).view(1, -1)
@@ -106,13 +106,13 @@ class KernelRegressor(Regressor):
         weights = torch.split(weights, count)
         self.weights = {s: w for s, w in zip(species, weights)}
 
-    def get_target(self, conf: Conf) -> Target:
+    def get_target(self, struc: Structure) -> Target:
         """
         TODO:
 
         """
         basis_norms = self.basis.norms()
-        products, norms = self.get_scalar_products_dict(conf)
+        products, norms = self.get_scalar_products_dict(struc)
         energy = cfg.zero
         for species, prod in products.items():
             k = self.kernel.function(
@@ -122,22 +122,22 @@ class KernelRegressor(Regressor):
             ).pow(self.exponent[species])
             energy = energy + (k @ self.weights[species]).sum()
         if energy.grad_fn:
-            (g,) = torch.autograd.grad(energy, conf.positions, retain_graph=True)
+            (g,) = torch.autograd.grad(energy, struc.positions, retain_graph=True)
         else:
             g = cfg.zero
         return Target(energy=energy.detach(), forces=-g)
 
     # ------------------------
-    def get_scalar_products_dict(self, conf: Conf) -> tuple[dict, dict]:
+    def get_scalar_products_dict(self, struc: Structure) -> tuple[dict, dict]:
         prod = defaultdict(list)
         norms = defaultdict(list)
-        for d in self.descriptor.get_descriptors(conf):
+        for d in self.descriptor.get_descriptors(struc):
             k = self.get_scalar_products(d)
             prod[d.species].append(k)
             norms[d.species].append(d.norm)
         return prod, norms
 
-    def get_scalar_products(self, d: LocalDes) -> list[Tensor]:
+    def get_scalar_products(self, d: Descriptor) -> list[Tensor]:
         basis = self.basis
         # 1. update cache: d._cache_p
         while len(d._cache_p) <= basis.index:

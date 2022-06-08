@@ -3,15 +3,15 @@ from __future__ import annotations
 
 from torch import Tensor
 
-from .des import LocalDes
+from .descriptor import Descriptor
 
 
-class LocalEnv:
+class Environment:
     """
     Local chemical environment (LCE) of an atom.
 
     Keywords:
-    central atom    the atom for which the LocalEnv
+    central atom    the atom for which the Environment
                     is created
     neighborhood    atoms in the neighborhood of
                     the central atom (|rij| < cutoff)
@@ -37,7 +37,7 @@ class LocalEnv:
     ) -> None:
         """
         index    index of the central atom in the
-                 Conf it belongs to.
+                 Structure it belongs to.
         number   atomic number of the central atom
         numbers  atomic numbers of the neighborhood atoms
         rij      coordinates of the neighborhood atoms
@@ -52,4 +52,4 @@ class LocalEnv:
         self.rij = rij
 
         # cache
-        self._cache_d: list[LocalDes | None] = []
+        self._cache_d: list[Descriptor | None] = []

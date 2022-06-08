@@ -8,44 +8,12 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 
-from ..dataclasses import Conf, LocalDes, LocalEnv
+from ..dataclasses import Descriptor, Environment, Structure
 from ..functions import Descriptor_fn, SoftZero_fn
 from ..parameters import ParameterMapping
 
 
-class Descriptor:
-    """
-    A Descriptor converts a "LocalEnv" object
-    into a "LocalDes" object:
-
-        Descriptor: LocalEnv -> LocalDes
-
-    See LocalEnv and LocalDes in core.dataclass.
-
-
-    Required methods:
-        1) descriptor
-        2) scalar_product
-
-
-    The "descriptor" method:
-    The body of a Descriptor should be implemented
-    as the "descriptor" method. The main component of
-    a LocalDes object is the "tensors" attribute.
-    "meta" are arbirtary data for index-keeping,
-    etc which are handled opaquely by the Descriptor.
-    Other attributes are "index", "species", and "norm"
-    which are automatically handled and, generally,
-    should not be specified within this method.
-
-
-    The "scalar_product" method:
-    Returns the scalar product of two LocalDes objects.
-    In particlar, the "norm" of a LocalDes object is
-    defined as the square root of its scalar product
-    by itself.
-
-    """
+class Descriptor_md:
 
     instances = 0
 
@@ -61,8 +29,8 @@ class Descriptor:
         self.descriptor_fn = descriptor_fn
 
         # Assign a global index for this instance
-        self.index = Descriptor.instances
-        Descriptor.instances += 1
+        self.index = Descriptor_md.instances
+        Descriptor_md.instances += 1
 
     def descriptor(
         self, number: int, numbers: list[int], rij: Tensor, cij: Tensor
@@ -76,8 +44,8 @@ class Descriptor:
         d = self.descriptor_fn.function(rij[m], wij, _numbers, unique)
         return d
 
-    def get_descriptor(self, e: LocalEnv) -> LocalDes:
-        while len(e._cache_d) < Descriptor.instances:
+    def get_descriptor(self, e: Environment) -> Descriptor:
+        while len(e._cache_d) < Descriptor_md.instances:
             e._cache_d.append(None)
         d = e._cache_d[self.index]
         if d is None:
@@ -86,14 +54,14 @@ class Descriptor:
             cij = torch.as_tensor(self.cutoff.broadcast((number, numbers)))
             _d = self.descriptor(number, numbers, e.rij, cij)
             _norm = self.scalar_product(_d, _d).sqrt().view([])
-            d = LocalDes(number, _d, _norm)
+            d = Descriptor(number, _d, _norm)
             e._cache_d[self.index] = d
         return d
 
-    def get_descriptors(self, conf: Conf) -> list[LocalDes]:
-        if conf._cache_e is None:
-            raise RuntimeError(f"{conf._cache_e = }")
-        return [self.get_descriptor(l) for l in conf._cache_e]
+    def get_descriptors(self, struc: Structure) -> list[Descriptor]:
+        if struc._cache_e is None:
+            raise RuntimeError(f"{struc._cache_e = }")
+        return [self.get_descriptor(l) for l in struc._cache_e]
 
     @staticmethod
     def scalar_product(
