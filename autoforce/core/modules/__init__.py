@@ -1,6 +1,6 @@
 # +
-from .descriptor_md import Descriptor_md
+from .geometry import Geometry
 from .model import Model
-from .regressor_md import KernelRegressor_md, Regressor_md
+from .regressor import Regressor
 
-__all__ = ["Descriptor_md", "Regressor_md", "KernelRegressor_md", "Model"]
+__all__ = ["Geometry", "Regressor", "Model"]

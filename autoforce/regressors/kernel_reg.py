@@ -11,21 +11,20 @@ from torch import Tensor
 import autoforce.cfg as cfg
 from autoforce.core.dataclasses import Descriptor, Structure, Target
 from autoforce.core.functions import Kernel_fn
+from autoforce.core.modules import Geometry, Regressor
 from autoforce.core.parameters import ParameterMapping
 
-from ..descriptor_md import Descriptor_md
 from .basis import Basis
-from .regressor import Regressor_md
 
 
-class KernelRegressor_md(Regressor_md):
+class Kernel_reg(Regressor):
     """
     TODO:
 
     """
 
     def __init__(
-        self, descriptor: Descriptor_md, kernel: Kernel_fn, exponent: ParameterMapping
+        self, descriptor: Geometry, kernel: Kernel_fn, exponent: ParameterMapping
     ) -> None:
         """
         TODO:

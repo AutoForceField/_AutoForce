@@ -10,7 +10,7 @@ from autoforce.core.dataclasses import Structure, Target
 from autoforce.core.parameters import ParameterMapping
 
 
-class Regressor_md(ABC):
+class Regressor(ABC):
     """
     TODO:
 

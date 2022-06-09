@@ -13,7 +13,7 @@ from ..functions import Descriptor_fn, SoftZero_fn
 from ..parameters import ParameterMapping
 
 
-class Descriptor_md:
+class Geometry:
 
     instances = 0
 
@@ -29,8 +29,8 @@ class Descriptor_md:
         self.descriptor_fn = descriptor_fn
 
         # Assign a global index for this instance
-        self.index = Descriptor_md.instances
-        Descriptor_md.instances += 1
+        self.index = Geometry.instances
+        Geometry.instances += 1
 
     def descriptor(
         self, number: int, numbers: list[int], rij: Tensor, cij: Tensor
@@ -45,7 +45,7 @@ class Descriptor_md:
         return d
 
     def get_descriptor(self, e: Environment) -> Descriptor:
-        while len(e._cache_d) < Descriptor_md.instances:
+        while len(e._cache_d) < Geometry.instances:
             e._cache_d.append(None)
         d = e._cache_d[self.index]
         if d is None:

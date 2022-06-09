@@ -10,10 +10,10 @@ import autoforce.cfg as cfg
 from autoforce.core.functions import Mapping_fn
 
 
-class Harmonics(Mapping_fn):
+class Harmonics_map(Mapping_fn):
 
     """
-    Descriptor_md:
+    Geometry:
 
     * An implementation of (solid) spherical harmonics.
       It maps 3D Cartesian vectors as follows:

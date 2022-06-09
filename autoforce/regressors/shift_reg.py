@@ -8,10 +8,10 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 from autoforce.core.dataclasses import Structure, Target
-from autoforce.core.modules import Regressor_md
+from autoforce.core.modules import Regressor
 
 
-class Shift(Regressor_md):
+class Shift_reg(Regressor):
     """
     TODO:
 
