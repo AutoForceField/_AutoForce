@@ -6,8 +6,8 @@ from typing import Any, Sequence
 
 from torch import Tensor
 
-from ..dataclasses import Conf, Target
-from ..parameters import ParameterMapping
+from autoforce.core.dataclasses import Structure, Target
+from autoforce.core.parameters import ParameterMapping
 
 
 class Regressor(ABC):
@@ -26,7 +26,9 @@ class Regressor(ABC):
         ...
 
     @abstractmethod
-    def get_design_matrix(self, confs: Sequence[Conf]) -> tuple[Tensor, Tensor, Any]:
+    def get_design_matrix(
+        self, structures: Sequence[Structure]
+    ) -> tuple[Tensor, Tensor, Any]:
         """
         TODO:
 
@@ -42,7 +44,7 @@ class Regressor(ABC):
         ...
 
     @abstractmethod
-    def get_target(self, conf: Conf) -> Target:
+    def get_target(self, struc: Structure) -> Target:
         """
         TODO:
 

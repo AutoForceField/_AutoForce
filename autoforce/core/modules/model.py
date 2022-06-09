@@ -7,7 +7,7 @@ import torch
 
 import autoforce.cfg as cfg
 
-from ..dataclasses import Conf, Target
+from ..dataclasses import Structure, Target
 from ..parameters import ParameterMapping
 
 
@@ -28,7 +28,7 @@ class Model:
     def cutoff(self) -> ParameterMapping:
         raise NotImplementedError("!")
 
-    def fit(self, confs: Sequence[Conf]) -> None:
+    def fit(self, structures: Sequence[Structure]) -> None:
         """
         TODO:
 
@@ -36,12 +36,12 @@ class Model:
         # 1. Targets
         _energies = []
         _forces = []
-        for conf in confs:
+        for struc in structures:
             # TODO:
-            if conf.target.energy is not None:
-                _energies.append(conf.target.energy)
-            if conf.target.forces is not None:
-                _forces.append(conf.target.forces)
+            if struc.target.energy is not None:
+                _energies.append(struc.target.energy)
+            if struc.target.forces is not None:
+                _forces.append(struc.target.forces)
         energies = torch.stack(_energies)
         forces = torch.stack(_forces).view(-1)
         targets = torch.cat([energies, forces])
@@ -51,7 +51,7 @@ class Model:
         dims = []
         sections = []
         for reg in self.regressors:
-            e, f, sec = reg.get_design_matrix(confs)
+            e, f, sec = reg.get_design_matrix(structures)
             matrices.append((e, f))
             dims.append(int(e.size(1)))
             sections.append(sec)
@@ -71,17 +71,17 @@ class Model:
         for reg, w, sec in zip(self.regressors, weights, sections):
             reg.set_weights(w, sec)
 
-    def get_target(self, conf: Conf) -> Target:
+    def get_target(self, struc: Structure) -> Target:
         """
         TODO:
 
         """
         t = Target(
             energy=torch.tensor(0.0, dtype=cfg.float_t),
-            forces=torch.zeros_like(conf.positions),
+            forces=torch.zeros_like(struc.positions),
         )
         for reg in self.regressors:
-            _t = reg.get_target(conf)
+            _t = reg.get_target(struc)
             t.energy += _t.energy
             t.forces += _t.forces
         return t

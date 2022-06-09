@@ -9,13 +9,13 @@ from torch import Tensor
 
 import autoforce.cfg as cfg
 from autoforce.core.functions import Descriptor_fn
-from autoforce.functions.harmonics import Harmonics
+from autoforce.functions.mappings import Harmonics_map
 
 
-class Overlaps(Descriptor_fn):
+class Overlaps_des(Descriptor_fn):
     def __init__(self, lmax: int, nmax: int) -> None:
         super().__init__()
-        self.harmonics = Harmonics(lmax)
+        self.harmonics = Harmonics_map(lmax)
         self.nmax = nmax
 
         # Auxiliary Tensors

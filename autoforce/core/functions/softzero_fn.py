@@ -8,7 +8,7 @@ from torch import Tensor
 
 class SoftZero_fn(ABC):
     """
-    A "SoftZero" is a function which satisfies:
+    A "SoftZero" is a function that satisfies:
     1. f(0) = 0
     2. f(1) = 1
     3. 0 < x < 1 --> 0 < f(x) < 1

@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from torch import Tensor
 
-from .des import LocalDes
+from autoforce.core.dataclasses import Descriptor
 
 
 class Basis:
@@ -18,7 +18,7 @@ class Basis:
         self.descriptors = defaultdict(list)
         self.active = defaultdict(list)
 
-    def append(self, d: LocalDes) -> None:
+    def append(self, d: Descriptor) -> None:
         self.descriptors[d.species].append(d.detach())
         self.active[d.species].append(True)
 

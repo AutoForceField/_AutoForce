@@ -1,7 +1,6 @@
 # +
-from .descriptor import Descriptor
-from .kernel_regressor import KernelRegressor
+from .geometry import Geometry
 from .model import Model
 from .regressor import Regressor
 
-__all__ = ["Descriptor", "Regressor", "KernelRegressor", "Model"]
+__all__ = ["Geometry", "Regressor", "Model"]

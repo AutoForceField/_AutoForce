@@ -5,8 +5,8 @@ import torch
 from scipy.special import sph_harm
 
 import autoforce.cfg as cfg
-from autoforce.functions.coordinates import r_theta_phi
-from autoforce.functions.harmonics import Harmonics
+from autoforce.functions.mappings import Harmonics_map
+from autoforce.functions.mappings.coordinates_map import r_theta_phi
 
 
 def _scipy_harmonics(rij: torch.Tensor, lmax: int) -> torch.Tensor:
@@ -36,7 +36,7 @@ def test_Harmonics_scipy(lmax: int = 10) -> bool:
 
     """
 
-    rlm = Harmonics(lmax)
+    rlm = Harmonics_map(lmax)
 
     x = torch.tensor([[1.0, 0.0, 0.0]], dtype=cfg.float_t)
     y = torch.tensor([[0.0, 1.0, 0.0]], dtype=cfg.float_t)
@@ -75,7 +75,7 @@ def test_Harmonics_rotational_invariance(lmax: int = 10, size: int = 1000) -> bo
 
     # harmonics
     lmax = 3
-    rlm = Harmonics(lmax)
+    rlm = Harmonics_map(lmax)
     xyz.grad = None
     xyz.requires_grad = True
     y = rlm.function(xyz)

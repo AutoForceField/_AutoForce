@@ -7,13 +7,13 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core.functions import Map_fn
+from autoforce.core.functions import Mapping_fn
 
 
-class Harmonics(Map_fn):
+class Harmonics_map(Mapping_fn):
 
     """
-    Description:
+    Geometry:
 
     * An implementation of (solid) spherical harmonics.
       It maps 3D Cartesian vectors as follows:

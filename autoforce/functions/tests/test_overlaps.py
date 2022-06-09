@@ -1,11 +1,11 @@
 # +
 from __future__ import annotations
 
-from autoforce.functions.overlaps import Overlaps
+from autoforce.functions.descriptors import Overlaps_des
 
 
 def test_Overlaps_setup() -> bool:
-    Overlaps(3, 3)
+    Overlaps_des(3, 3)
     return True
 
 

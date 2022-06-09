@@ -1,7 +1,8 @@
 # +
 import torch
 
-from autoforce.functions.softzeros import Polynomial_sz, Sine_sz, SoftZero_fn
+from autoforce.core.functions import SoftZero_fn
+from autoforce.functions.softzeros import Polynomial_sz, Sine_sz
 
 
 def _test(f: SoftZero_fn) -> bool:
