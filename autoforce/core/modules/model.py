@@ -7,7 +7,7 @@ import torch
 
 import autoforce.cfg as cfg
 
-from ..dataclasses import Structure, Target
+from ..dataclasses import Properties, Structure
 from ..parameters import ParameterMapping
 
 
@@ -33,18 +33,18 @@ class Model:
         TODO:
 
         """
-        # 1. Targets
+        # 1. Propertiess
         _energies = []
         _forces = []
         for struc in structures:
             # TODO:
-            if struc.target.energy is not None:
-                _energies.append(struc.target.energy)
-            if struc.target.forces is not None:
-                _forces.append(struc.target.forces)
+            if struc.properties.energy is not None:
+                _energies.append(struc.properties.energy)
+            if struc.properties.forces is not None:
+                _forces.append(struc.properties.forces)
         energies = torch.stack(_energies)
         forces = torch.stack(_forces).view(-1)
-        targets = torch.cat([energies, forces])
+        properties = torch.cat([energies, forces])
 
         # 2.
         matrices = []
@@ -61,8 +61,8 @@ class Model:
         # 3. torch.lstsq is random -> best of 7 maybe semi-deterministic
         opt_mae = None
         for _ in range(7):
-            sol = torch.linalg.lstsq(matrix, targets).solution
-            mae = (matrix @ sol - targets).abs().mean()
+            sol = torch.linalg.lstsq(matrix, properties).solution
+            mae = (matrix @ sol - properties).abs().mean()
             if opt_mae is None or mae < opt_mae:
                 opt_mae = mae
                 solution = sol
@@ -71,17 +71,17 @@ class Model:
         for reg, w, sec in zip(self.regressors, weights, sections):
             reg.set_weights(w, sec)
 
-    def get_target(self, struc: Structure) -> Target:
+    def get_properties(self, struc: Structure) -> Properties:
         """
         TODO:
 
         """
-        t = Target(
+        t = Properties(
             energy=torch.tensor(0.0, dtype=cfg.float_t),
             forces=torch.zeros_like(struc.positions),
         )
         for reg in self.regressors:
-            _t = reg.get_target(struc)
+            _t = reg.get_properties(struc)
             t.energy += _t.energy
             t.forces += _t.forces
         return t

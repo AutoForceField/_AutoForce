@@ -1,7 +1,7 @@
 # +
 from .descriptor import Descriptor
 from .environment import Environment
+from .properties import Properties
 from .structure import Structure
-from .target import Target
 
-__all__ = ["Structure", "Target", "Environment", "Descriptor"]
+__all__ = ["Structure", "Properties", "Environment", "Descriptor"]

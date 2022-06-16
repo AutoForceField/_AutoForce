@@ -6,7 +6,7 @@ from typing import Any, Sequence
 
 from torch import Tensor
 
-from autoforce.core.dataclasses import Structure, Target
+from autoforce.core.dataclasses import Properties, Structure
 from autoforce.core.parameters import ParameterMapping
 
 
@@ -44,7 +44,7 @@ class Regressor(ABC):
         ...
 
     @abstractmethod
-    def get_target(self, struc: Structure) -> Target:
+    def get_properties(self, struc: Structure) -> Properties:
         """
         TODO:
 

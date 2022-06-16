@@ -6,7 +6,7 @@ from typing import Optional
 from torch import Tensor
 
 
-class Target:
+class Properties:
 
     __slots__ = ("energy", "forces")
 
