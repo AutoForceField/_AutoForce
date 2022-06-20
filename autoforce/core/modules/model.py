@@ -76,7 +76,7 @@ class Model:
         for reg, w, sec in zip(self.regressors, weights, sections):
             reg.set_weights(w, sec)
 
-    def get_properties(self, struc: Structure) -> Properties:
+    def predict(self, struc: Structure) -> Properties:
         """
         TODO:
 
@@ -86,7 +86,7 @@ class Model:
             forces=torch.zeros_like(struc.positions),
         )
         for reg in self.regressors:
-            _t = reg.get_properties(struc)
+            _t = reg.predict(struc)
             t.energy += _t.energy  # type: ignore
             t.forces += _t.forces  # type: ignore
         return t

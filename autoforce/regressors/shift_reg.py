@@ -45,7 +45,7 @@ class Shift_reg(Regressor):
         f = torch.zeros(3 * f_len, dim, dtype=cfg.float_t)
         return e, f, sections
 
-    def get_properties(self, struc):
+    def predict(self, struc):
         e = 0
         for number, count in struc.unique_counts.items():
             e = e + self.weights[number] * count

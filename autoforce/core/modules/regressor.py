@@ -44,7 +44,7 @@ class Regressor(ABC):
         ...
 
     @abstractmethod
-    def get_properties(self, struc: Structure) -> Properties:
+    def predict(self, struc: Structure) -> Properties:
         """
         TODO:
 

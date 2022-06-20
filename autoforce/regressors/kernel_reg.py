@@ -105,7 +105,7 @@ class Kernel_reg(Regressor):
         weights = torch.split(weights, count)
         self.weights = {s: w for s, w in zip(species, weights)}
 
-    def get_properties(self, struc: Structure) -> Properties:
+    def predict(self, struc: Structure) -> Properties:
         """
         TODO:
 
