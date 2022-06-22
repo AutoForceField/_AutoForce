@@ -13,6 +13,8 @@ from ..parameters import ParameterMapping
 from .regression import Regression
 from .regressor import Regressor
 
+__all__ = ["Model", "RegressionModel"]
+
 
 class Model(abc.ABC):
     @property

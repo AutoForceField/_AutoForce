@@ -1,12 +1,12 @@
 # +
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+import abc
 
 from torch import Tensor
 
 
-class SoftZero_fn(ABC):
+class SoftZero_fn(abc.ABC):
     """
     A "SoftZero" is a function that satisfies:
     1. f(0) = 0
@@ -19,6 +19,6 @@ class SoftZero_fn(ABC):
 
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def function(self, x: Tensor) -> Tensor:
         ...

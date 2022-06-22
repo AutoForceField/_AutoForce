@@ -1,10 +1,10 @@
 # +
-from abc import ABC, abstractmethod
+import abc
 
 from torch import Tensor
 
 
-class Regression(ABC):
+class Regression(abc.ABC):
     """
     Abstract base class for "Regression".
 
@@ -22,8 +22,8 @@ class Regression(ABC):
 
     """
 
-    @abstractmethod
-    def fit(self, design_matrix: Tensor, targets: Tensor) -> tuple[Tensor, Tensor]:
+    @abc.abstractmethod
+    def fit(self, design_matrix: Tensor, targets: Tensor) -> Tensor:
         """
         Agruments:
             design_matrix       a 2d tensor of size (m, n)
@@ -36,6 +36,6 @@ class Regression(ABC):
         ...
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def is_deterministic(self) -> bool:
         ...
