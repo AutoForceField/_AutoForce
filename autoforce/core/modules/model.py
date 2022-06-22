@@ -1,6 +1,7 @@
 # +
 from __future__ import annotations
 
+import abc
 from typing import Sequence
 
 import torch
@@ -13,7 +14,22 @@ from .regression import Regression
 from .regressor import Regressor
 
 
-class Model:
+class Model(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def cutoff(self) -> ParameterMapping | None:
+        ...
+
+    @abc.abstractmethod
+    def fit(self, structures: Sequence[Structure]) -> None:
+        ...
+
+    @abc.abstractmethod
+    def predict(self, struc: Structure) -> Properties:
+        ...
+
+
+class RegressionModel(Model):
     """
     TODO:
 
