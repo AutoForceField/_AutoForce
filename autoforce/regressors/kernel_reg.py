@@ -9,7 +9,7 @@ import torch
 from torch import Tensor
 
 import autoforce.cfg as cfg
-from autoforce.core.dataclasses import Descriptor, Structure, Target
+from autoforce.core.dataclasses import Descriptor, Properties, Structure
 from autoforce.core.functions import Kernel_fn
 from autoforce.core.modules import Geometry, Regressor
 from autoforce.core.parameters import ParameterMapping
@@ -105,7 +105,7 @@ class Kernel_reg(Regressor):
         weights = torch.split(weights, count)
         self.weights = {s: w for s, w in zip(species, weights)}
 
-    def get_target(self, struc: Structure) -> Target:
+    def predict(self, struc: Structure) -> Properties:
         """
         TODO:
 
@@ -124,7 +124,7 @@ class Kernel_reg(Regressor):
             (g,) = torch.autograd.grad(energy, struc.positions, retain_graph=True)
         else:
             g = cfg.zero
-        return Target(energy=energy.detach(), forces=-g)
+        return Properties(energy=energy.detach(), forces=-g)
 
     # ------------------------
     def get_scalar_products_dict(self, struc: Structure) -> tuple[dict, dict]:

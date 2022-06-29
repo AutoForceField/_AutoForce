@@ -1,13 +1,13 @@
 # +
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+import abc
 
 from torch import Tensor
 
 
-class Kernel_fn(ABC):
-    @abstractmethod
+class Kernel_fn(abc.ABC):
+    @abc.abstractmethod
     def function(self, uv: Tensor, u: Tensor, v: Tensor) -> Tensor:
         """
         uv:   scalar products matrix <u_i,v_j> with shape (m, n)

@@ -1,12 +1,12 @@
 # +
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+import abc
 
 from torch import Tensor
 
 
-class Bijection_fn(ABC):
+class Bijection_fn(abc.ABC):
     """
     A "Bijection" is a "Function" which, in
     addition to the "function" method, has
@@ -16,10 +16,10 @@ class Bijection_fn(ABC):
 
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def function(self, x: Tensor) -> Tensor:
         ...
 
-    @abstractmethod
+    @abc.abstractmethod
     def inverse(self, x: Tensor) -> Tensor:
         ...

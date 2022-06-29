@@ -9,7 +9,7 @@ from ase.io import read as _read
 from ase.neighborlist import wrap_positions
 
 import autoforce.cfg as cfg
-from autoforce.core.dataclasses import Structure, Target
+from autoforce.core.dataclasses import Properties, Structure
 
 
 def from_atoms(atoms: ase.Atoms) -> Structure:
@@ -33,10 +33,10 @@ def from_atoms(atoms: ase.Atoms) -> Structure:
         if "forces" in atoms.calc.results:
             f = atoms.get_forces()
             f = torch.from_numpy(f).to(cfg.float_t)
-    target = Target(energy=e, forces=f)
+    properties = Properties(energy=e, forces=f)
 
     # 3.
-    struc = Structure(numbers, positions, cell, atoms.pbc, target=target)
+    struc = Structure(numbers, positions, cell, atoms.pbc, properties=properties)
 
     return struc
 

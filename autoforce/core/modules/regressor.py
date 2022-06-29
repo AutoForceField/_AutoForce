@@ -1,23 +1,23 @@
 # +
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+import abc
 from typing import Any, Sequence
 
 from torch import Tensor
 
-from autoforce.core.dataclasses import Structure, Target
+from autoforce.core.dataclasses import Properties, Structure
 from autoforce.core.parameters import ParameterMapping
 
 
-class Regressor(ABC):
+class Regressor(abc.ABC):
     """
     TODO:
 
     """
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def cutoff(self) -> ParameterMapping | None:
         """
         TODO:
@@ -25,7 +25,7 @@ class Regressor(ABC):
         """
         ...
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_design_matrix(
         self, structures: Sequence[Structure]
     ) -> tuple[Tensor, Tensor, Any]:
@@ -35,7 +35,7 @@ class Regressor(ABC):
         """
         ...
 
-    @abstractmethod
+    @abc.abstractmethod
     def set_weights(self, weights: Tensor, sections: Any) -> None:
         """
         TODO:
@@ -43,8 +43,8 @@ class Regressor(ABC):
         """
         ...
 
-    @abstractmethod
-    def get_target(self, struc: Structure) -> Target:
+    @abc.abstractmethod
+    def predict(self, struc: Structure) -> Properties:
         """
         TODO:
 

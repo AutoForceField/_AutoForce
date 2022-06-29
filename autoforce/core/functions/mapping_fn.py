@@ -1,12 +1,12 @@
 # +
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+import abc
 
 from torch import Tensor
 
 
-class Mapping_fn(ABC):
-    @abstractmethod
+class Mapping_fn(abc.ABC):
+    @abc.abstractmethod
     def function(self, rij: Tensor) -> Tensor:
         ...

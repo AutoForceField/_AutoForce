@@ -6,7 +6,7 @@ from typing import Optional
 from torch import Tensor
 
 from .environment import Environment
-from .target import Target
+from .properties import Properties
 
 
 class Structure:
@@ -23,7 +23,7 @@ class Structure:
     positions    self explanatory
     cell         self explanatory
     pbc          periodic boundary conditions
-    target       energy & forces
+    properties   energy & forces
 
     """
 
@@ -32,7 +32,7 @@ class Structure:
         "positions",
         "cell",
         "pbc",
-        "target",
+        "properties",
         "number_of_atoms",
         "unique_counts",
         "_cache_e",
@@ -45,7 +45,7 @@ class Structure:
         positions: Tensor,
         cell: Tensor,
         pbc: list[bool],
-        target: Optional[Target] = None,
+        properties: Optional[Properties] = None,
     ) -> None:
         """
         Self explanatory.
@@ -65,9 +65,9 @@ class Structure:
         self.cell = cell
         self.pbc = pbc
 
-        if target is None:
-            target = Target()
-        self.target = target
+        if properties is None:
+            properties = Properties()
+        self.properties = properties
 
         # cache
         self._cache_e: Optional[list[Environment]] = None
